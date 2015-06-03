@@ -35,18 +35,17 @@ For Android, it is necessary to install the Android SDK with API 21 or later and
 Installation
 To create a blank project that will serve as a base for html sources, the procedure is as follows :
 
-npm –g install cordova
-cordova create ProjectName ch.company.application.id ProjectName
-cd ProjectName
-cordova platform add ios
-cordova platform add android
-Register on the Sysmosoft web site : http://www.sysmosoft.com/sdk/sense-sdk.html
+- npm –g install cordova
+- cordova create ProjectName ch.company.application.id ProjectName
+- cd ProjectName
+- cordova platform add ios
+- cordova platform add android
+- Register on the Sysmosoft web site : http://www.sysmosoft.com/sdk/sense-sdk.html
 
-cordova plugins add: https://senseuser@subversion.aim-services.ch/git/SensePlugin.git/
-Using your account, get the generic password on the page: https://sysmosoft.zendesk.com/hc/en-us/articles/202977202-For-Cordova-developers
+- cordova plugins add https://github.com/devmobileaim/cordovasenseconnector.git
 
-cordova build ios
-cordova build android
+- cordova build ios
+- cordova build android
 You have a project that you can edit or compile with XCode command line.
 
  
@@ -54,10 +53,10 @@ You have a project that you can edit or compile with XCode command line.
 Validation
 To test the Cordova project please follow the following procedure:
 
-sudo npm –g install ios-deploy
-sudo npm –g install ios-sim
-cordova run ios
-cordova run android
+- sudo npm –g install ios-deploy
+- sudo npm –g install ios-sim
+- cordova run ios
+- cordova run android
 The application will run in the emulator and double tapping Cmd + Shift + H you can check the overview of the application is well hidden by the Sense SDK. For Android it depends on the version of the os but clicking on the “Exposé” you should see a black thumbnail where the application should be.
 
  
@@ -65,6 +64,6 @@ The application will run in the emulator and double tapping Cmd + Shift + H you 
 Packaging
 To build the .ipa you can either use XCode or use the following command line :
 
-xcrun -sdk iphoneos PackageApplication -v $PWD/platforms/ios/build/device/ProjectName.app -o $PWD/platforms/ios/build/ ProjectName.ipa –embed ../ProjectName.mobileprovision
+- xcrun -sdk iphoneos PackageApplication -v $PWD/platforms/ios/build/device/ProjectName.app -o $PWD/platforms/ios/build/ ProjectName.ipa –embed ../ProjectName.mobileprovision
 The development profile has been previously configured on the machine and the .mobileprovision file downloaded from the Apple site.
 To build the APK you can use the standard building command of Cordova CLI.
