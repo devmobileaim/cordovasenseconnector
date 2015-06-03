@@ -1,0 +1,165 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="ch.aimservices.cordova.plugins.sense"
+    version="1.0.0">
+    
+    <name>Sense-Connector</name>
+    <description>Connector between Cordova applications and Sysmosoft's Sense Framework</description>
+    <author>Pavel Blanco</author>
+    <keywords>cordova,sense</keywords>
+    
+    <engines>
+    	<engine name="cordova" version=">=3.0.0" />
+    </engines>
+    
+    <js-module src="www/sense.js" name="Sense">
+    	<clobbers target="Sense" />
+    </js-module>
+    
+    <!-- Android -->
+    <platform name="android">
+	
+    	<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.INTERNET" />
+			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+			<uses-permission android:name="android.permission.WAKE_LOCK" />
+			<uses-permission android:name="android.permission.VIBRATE" /> <!-- Used for push notifications on > 4.2 devices -->
+			<uses-permission android:name="android.permission.BLUETOOTH" />
+			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+			<!-- Permission name and intent filter from PushBroadcastReceiver will be changed at packaging time for specific environments -->
+			<permission
+				android:name="ch.sysmosoft.sense.android.core.permission.C2D_MESSAGE"
+				android:protectionLevel="signature" />
+
+			<uses-permission android:name="ch.sysmosoft.sense.android.core.permission.C2D_MESSAGE" />
+
+			<permission
+				android:name="ch.sysmosoft.sense.android.core.permission.RECEIVE_NOTIFICATIONS"
+				android:protectionLevel="signature" >
+			</permission>
+
+			<uses-permission android:name="ch.sysmosoft.sense.android.core.permission.RECEIVE_NOTIFICATIONS" />
+		</config-file>
+		
+    	<config-file target="AndroidManifest.xml" parent="/manifest/application">
+			
+			<!-- Services -->
+			<service
+				android:name="ch.sysmosoft.sense.android.core.service.SenseCoreService"
+				android:exported="false" />
+			<service
+				android:name="ch.sysmosoft.sense.android.core.service.SenseSessionService"
+				android:exported="false" />
+			<service
+				android:name="ch.sysmosoft.sense.android.core.push.PushNotificationService"
+				android:exported="false" />
+
+			<receiver
+				android:name="ch.sysmosoft.sense.android.core.push.PushBroadcastReceiver"
+				android:permission="com.google.android.c2dm.permission.SEND" >
+				<intent-filter>
+					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+					<category android:name="ch.sysmosoft.sense.android.core" />
+				</intent-filter>
+			</receiver>
+
+			<receiver android:name="ch.sysmosoft.sense.android.core.update.SenseApplicationUpdateReceiver" >
+				<intent-filter android:priority="1000">
+					<action android:name="android.intent.action.PACKAGE_REPLACED" />
+					<data android:scheme="package" />
+				</intent-filter>
+			</receiver>
+			
+			<activity android:name="ch.aimservices.android.plugin.SenseConnector" android:label="@string/app_name">
+    			<intent-filter>
+					<action android:name="android.intent.action.VIEW" />
+					<category android:name="android.intent.category.DEFAULT" />
+    			</intent-filter>
+    		</activity>
+    	</config-file>
+    	
+    	<config-file target="res/xml/config.xml" parent="/*">
+    		<feature name="SenseConnector">
+    			<param name="android-package" value="ch.aimservices.android.plugin.SenseConnector" />
+    			<param name="onload" value="true" />
+    		</feature>
+    	</config-file>
+    	
+		<!-- Java sources -->
+		<source-file src="src/android/java/ch/aimservices/android/plugin/Action.java" target-dir="src/ch/aimservices/android/plugin" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/BaseAction.java" target-dir="src/ch/aimservices/android/plugin" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/SenseConnector.java" target-dir="src/ch/aimservices/android/plugin" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/SenseServicesContext.java" target-dir="src/ch/aimservices/android/plugin" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/AbstractSessionAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/ChangePwdAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/EnrollAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/ExitAppAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/InitializeAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/LoginAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/LoginErrorHandler.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/TerminateAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/UpdateAppAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/BaseProxyConfigurator.java" target-dir="src/ch/aimservices/android/proxy" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/ConfiguratorRegistry.java" target-dir="src/ch/aimservices/android/proxy" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/ProxyConfigurator.java" target-dir="src/ch/aimservices/android/proxy" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/HoneycombConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/IceCreamSandwichConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/JellyBeanConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/KitKatConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
+		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/LConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
+		<source-file src="src/android/java/ch/aimservices/android/reflection/Reflections.java" target-dir="src/ch/aimservices/android/reflection" />
+
+		<!-- so Libs -->
+		<resource-file src="src/android/libs/armeabi/libdatabase_sqlcipher.so" target="libs/armeabi/libdatabase_sqlcipher.so" />
+		<resource-file src="src/android/libs/armeabi/libsqlcipher_android.so" target="libs/armeabi/libsqlcipher_android.so" />
+		<resource-file src="src/android/libs/armeabi/libstlport_shared.so" target="libs/armeabi/libstlport_shared.so" />
+
+		<resource-file src="src/android/libs/x86/libdatabase_sqlcipher.so" target="libs/x86/libdatabase_sqlcipher.so" />
+		<resource-file src="src/android/libs/x86/libsqlcipher_android.so" target="libs/x86/libsqlcipher_android.so" />
+		<resource-file src="src/android/libs/x86/libstlport_shared.so" target="libs/x86/libstlport_shared.so" />
+		
+		<!-- icudt46l.zip -->
+		<resource-file src="src/android/assets/icudt46l.zip" target="assets/icudt46l.zip" />
+		
+		<!-- Sense SDK jar -->
+		<resource-file src="src/android/libs/commons-io-2.4.jar" target="libs/commons-io-2.4.jar" />
+		<resource-file src="src/android/libs/sense-sdk-android-sdk-3.6.0-20150423.124918-4-obfuscated.jar" target="libs/sense-sdk-android-sdk-3.6.0-20150423.124918-4-obfuscated.jar" />
+
+		<!-- Properties -->
+		<resource-file src="src/android/assets/sense-config.properties" target="assets/sense-config.properties" />
+    </platform>
+    
+    <!-- iOS -->
+    <platform name="ios">
+    	<config-file target="config.xml" parent="/*">
+    		<feature name="SenseConnector">
+    			<param name="ios-package" value="SenseConnector" />
+    			<param name="onload" value="true" />
+    		</feature>
+    	</config-file>
+    	
+    	<config-file target="*-Info.plist" parent="CFBundleSignature">
+    		<string>ResourceRules.plist</string>
+    	</config-file>
+    	
+    	<framework src="libz.dylib" />
+    	<framework src="libxml2.dylib" />
+    	<framework src="libc++.dylib" />
+    	<framework src="CoreData.framework" />
+    	<framework src="SystemConfiguration.framework" />
+    	<framework src="Security.framework" />
+    	<framework src="CFNetwork.framework" />
+    	<framework src="src/ios/sense.framework" custom="true" />
+
+    	<header-file src="src/ios/SenseConnector.h" />
+    	<source-file src="src/ios/SenseConnector.m" />
+    	
+    	<resource-file src="src/ios/osmosys.properties" />
+    	<resource-file src="src/ios/ResourceRules.plist" />
+
+    </platform>
+</plugin>
