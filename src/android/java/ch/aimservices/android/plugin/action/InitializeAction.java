@@ -66,7 +66,8 @@ public class InitializeAction extends BaseAction implements SessionServiceLifecy
 
     @Override
     public void onServiceConnected(final SessionService sessionService) {
-        Log.d(getLogTag(), "Sense service connected");
+        Log.d(getLogTag(), "Session service connected");
+        Log.d(getLogTag(), " session is " + (sessionService.isSessionOffline() ? "offline" : "online"));
         senseServicesContext.setSessionService(sessionService);
     }
 

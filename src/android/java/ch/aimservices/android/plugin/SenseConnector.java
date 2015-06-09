@@ -3,9 +3,11 @@ package ch.aimservices.android.plugin;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -48,12 +50,15 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
     private SessionService sessionService;
     private SenseServices senseServices;
 
+    private WebView systemWebView;
+
     public SenseConnector() {
     }
 
     @Override
     public void initialize(final CordovaInterface cordova, final CordovaWebView webview) {
         super.initialize(cordova, webview);
+        systemWebView = (WebView) webview.getView();
         initializeActions();
         initializeSense();
         disableCookies(cordova.getActivity());
@@ -94,13 +99,13 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
     }
 
     private void initializeActions() {
-        actions.add(new InitializeAction(this.webView, this.cordova, this));
-        actions.add(new LoginAction(this.webView, this.cordova, this));
-        actions.add(new EnrollAction(this.webView, this.cordova, this));
-        actions.add(new ChangePwdAction(this.webView, this.cordova, this));
-        actions.add(new TerminateAction(this.webView, this.cordova, this));
-        actions.add(new ExitAppAction(this.webView, this.cordova, this));
-		actions.add(new UpdateAppAction(this.webView, this.cordova, this));
+        actions.add(new InitializeAction(systemWebView, this.cordova, this));
+        actions.add(new LoginAction(systemWebView, this.cordova, this));
+        actions.add(new EnrollAction(systemWebView, this.cordova, this));
+        actions.add(new ChangePwdAction(systemWebView, this.cordova, this));
+        actions.add(new TerminateAction(systemWebView, this.cordova, this));
+        actions.add(new ExitAppAction(systemWebView, this.cordova, this));
+		actions.add(new UpdateAppAction(systemWebView, this.cordova, this));
     }
 
     private void initializeSense() {
@@ -116,8 +121,8 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
     }
 
 	private void setWebViewSettings() {
-		this.webView.setDrawingCacheEnabled(false);
-		final WebSettings settings = webView.getSettings();
+        systemWebView.setDrawingCacheEnabled(false);
+		final WebSettings settings = systemWebView.getSettings();
 		settings.setJavaScriptCanOpenWindowsAutomatically(false);
 		settings.setJavaScriptEnabled(true);
 		settings.setAppCacheEnabled(false);
@@ -136,12 +141,12 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
 	}
 
     private void clearWebViewData() {
-        if (webView != null) {
-            webView.clearCache(true);
-            webView.clearFormData();
-            webView.clearHistory();
-            webView.clearSslPreferences();
-            webView.clearMatches();
+        if (systemWebView != null) {
+            systemWebView.clearCache(true);
+            systemWebView.clearFormData();
+            systemWebView.clearHistory();
+            systemWebView.clearSslPreferences();
+            systemWebView.clearMatches();
         }
         final Activity activity = cordova.getActivity();
         activity.deleteDatabase("webview.db");

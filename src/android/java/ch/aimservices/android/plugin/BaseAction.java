@@ -44,7 +44,7 @@ public abstract class BaseAction implements Action {
     }
 
     protected Context getContext() {
-        return webview.getContext().getApplicationContext();
+        return getCordovaActivity().getApplicationContext();
     }
 
     protected Activity getCordovaActivity() {
