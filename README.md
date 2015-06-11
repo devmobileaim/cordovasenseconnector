@@ -48,10 +48,8 @@ To create a blank project that will serve as a base for html sources, the proced
 - cd ProjectName
 - cordova platform add ios
 - cordova platform add android
-- Register on the Sysmosoft web site : http://www.sysmosoft.com/sdk/sense-sdk.html
-
+- **Register on the Sysmosoft web site** : http://www.sysmosoft.com/sdk/sense-sdk.html
 - cordova plugins add https://github.com/devmobileaim/cordovasenseconnector.git
-
 - cordova build ios
 - cordova build android
 You have a project that you can edit or compile with XCode command line.
@@ -65,6 +63,7 @@ To test the Cordova project please follow the following procedure:
 - sudo npm –g install ios-sim
 - cordova run ios
 - cordova run android
+
 The application will run in the emulator and double tapping Cmd + Shift + H you can check the overview of the application is well hidden by the Sense SDK. For Android it depends on the version of the os but clicking on the “Exposé” you should see a black thumbnail where the application should be.
 
  
