@@ -1,0 +1,35 @@
+{
+  "name": "CordovaSenseConnector",
+  "version": "1.0.0",
+  "description": "Connector between Cordova applications and Sysmosoft's Sense Framework",
+  "cordova": {
+    "id": "ch.aimservices.cordova.plugins.sense",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devmobileaim/cordovasenseconnector.git"
+  },
+  "keywords": [
+    "cordova",
+    "sense",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Pavel Blanco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devmobileaim/cordovasenseconnector/issues"
+  },
+  "homepage": "https://github.com/devmobileaim/cordovasenseconnector#readme"
+}
