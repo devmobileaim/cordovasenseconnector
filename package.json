@@ -1,6 +1,6 @@
 {
-  "name": "CordovaSenseConnector",
-  "version": "1.0.0",
+  "name": "cordova-sense-connector",
+  "version": "1.0.1",
   "description": "Connector between Cordova applications and Sysmosoft's Sense Framework",
   "cordova": {
     "id": "ch.aimservices.cordova.plugins.sense",
