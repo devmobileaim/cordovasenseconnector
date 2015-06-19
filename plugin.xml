@@ -7,7 +7,7 @@
     <name>cordova-sense-connector</name>
     <description>Connector between Cordova applications and Sysmosoft's Sense Framework</description>
     <author>Pavel Blanco</author>
-    <keywords>cordova,sense</keywords>
+    <keywords>cordova,sense,security</keywords>
     
     <engines>
     	<engine name="cordova" version=">=3.0.0" />
