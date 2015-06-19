@@ -5,7 +5,7 @@
     id="ch.aimservices.cordova.plugins.sense"
     version="1.0.0">
     
-    <name>Sense-Connector</name>
+    <name>cordova-sense-connector</name>
     <description>Connector between Cordova applications and Sysmosoft's Sense Framework</description>
     <author>Pavel Blanco</author>
     <keywords>cordova,sense</keywords>
