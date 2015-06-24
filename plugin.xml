@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="ch.aimservices.cordova.plugins.sense"
-    version="1.0.1">
+    version="1.0.0">
     
     <name>Sense-Connector</name>
     <description>Connector between Cordova applications and Sysmosoft's Sense Framework</description>
@@ -11,7 +11,7 @@
     
     <engines>
     	<engine name="cordova" version=">=3.0.0" />
-    	<engine name="cordova" version="<4.0.0" />
+    	<engine name="cordova" version="&lt;4.0.0" />
     </engines>
     
     <js-module src="www/sense.js" name="Sense">
