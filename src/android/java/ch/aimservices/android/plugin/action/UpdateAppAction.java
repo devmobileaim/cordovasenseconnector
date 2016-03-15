@@ -90,7 +90,7 @@ public class UpdateAppAction extends BaseAction {
 
         final Uri downloadUri = Uri.parse(url);
         final Request request = new Request(downloadUri);
-        request.setTitle("SyzMobile application update");
+        request.setTitle("Application update");
         request.setDestinationInExternalFilesDir(getCordovaActivity(), Environment.DIRECTORY_DOWNLOADS, "MainActivity.apk");
 
         Toast.makeText(getContext(), "Launching application update, please wait...", Toast.LENGTH_LONG).show();
