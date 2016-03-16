@@ -22,57 +22,22 @@
 	
     	<config-file target="AndroidManifest.xml" parent="/manifest">
 			<uses-permission android:name="android.permission.INTERNET" />
-			<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-			<uses-permission android:name="android.permission.WAKE_LOCK" />
-			<uses-permission android:name="android.permission.VIBRATE" /> <!-- Used for push notifications on > 4.2 devices -->
 			<uses-permission android:name="android.permission.BLUETOOTH" />
-			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-			<!-- Permission name and intent filter from PushBroadcastReceiver will be changed at packaging time for specific environments -->
-			<permission
-				android:name="ch.sysmosoft.sense.android.core.permission.C2D_MESSAGE"
-				android:protectionLevel="signature" />
-
-			<uses-permission android:name="ch.sysmosoft.sense.android.core.permission.C2D_MESSAGE" />
-
-			<permission
-				android:name="ch.sysmosoft.sense.android.core.permission.RECEIVE_NOTIFICATIONS"
-				android:protectionLevel="signature" >
-			</permission>
-
-			<uses-permission android:name="ch.sysmosoft.sense.android.core.permission.RECEIVE_NOTIFICATIONS" />
 		</config-file>
 		
     	<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			
 			<!-- Services -->
 			<service
-				android:name="ch.sysmosoft.sense.android.core.service.SenseCoreService"
-				android:exported="false" />
-			<service
 				android:name="ch.sysmosoft.sense.android.core.service.SenseSessionService"
-				android:exported="false" />
-			<service
-				android:name="ch.sysmosoft.sense.android.core.push.PushNotificationService"
-				android:exported="false" />
+				android:exported="false">
+				
+				<!-- SDK version -->
+            	<meta-data
+                	android:name="ch.sysmosoft.sense.android.sdk.version"
+                	android:value="3.9.0" />
+			</service>
 
-			<receiver
-				android:name="ch.sysmosoft.sense.android.core.push.PushBroadcastReceiver"
-				android:permission="com.google.android.c2dm.permission.SEND" >
-				<intent-filter>
-					<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-					<category android:name="ch.sysmosoft.sense.android.core" />
-				</intent-filter>
-			</receiver>
-
-			<receiver android:name="ch.sysmosoft.sense.android.core.update.SenseApplicationUpdateReceiver" >
-				<intent-filter android:priority="1000">
-					<action android:name="android.intent.action.PACKAGE_REPLACED" />
-					<data android:scheme="package" />
-				</intent-filter>
-			</receiver>
-			
 			<activity android:name="ch.aimservices.android.plugin.SenseConnector" android:label="@string/app_name">
     			<intent-filter>
 					<action android:name="android.intent.action.VIEW" />
@@ -126,7 +91,7 @@
 		
 		<!-- Sense SDK jar -->
 		<resource-file src="src/android/libs/commons-io-2.4.jar" target="libs/commons-io-2.4.jar" />
-		<resource-file src="src/android/libs/sense-sdk-android-sdk-3.6.0-20150423.124918-4-obfuscated.jar" target="libs/sense-sdk-android-sdk-3.6.0-20150423.124918-4-obfuscated.jar" />
+		<resource-file src="src/android/libs/sense-sdk-android-lib-3.9.0.jar" target="libs/sense-sdk-android-lib-3.9.0.jar" />
 
 		<!-- Properties -->
 		<resource-file src="src/android/assets/sense-config.properties" target="assets/sense-config.properties" />
