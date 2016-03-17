@@ -28,6 +28,10 @@ abstract class AbstractFileSystemAction extends BaseAction {
 	@Override
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
 		this.callbackContext = callbackContext;
+		if (this.senseServicesContext.getSenseServices() == null) {
+			callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, false));
+			return true;
+		}
 		cordova.getThreadPool().execute(new Runnable() {
 			@Override
 			public void run() {

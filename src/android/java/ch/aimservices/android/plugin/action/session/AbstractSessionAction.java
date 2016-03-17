@@ -115,7 +115,8 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
     @Override
     public void hasExpired() {
         Log.d(getLogTag(), "Session has expired.");
-        success(SESSION_EXPIRED);
+		senseServicesContext.setSenseServices(null);
+		success(SESSION_EXPIRED);
     }
 
     @Override

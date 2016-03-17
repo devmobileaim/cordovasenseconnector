@@ -49,8 +49,8 @@ public class GetItemAction extends AbstractFileSystemAction {
 			byte[] data = IOUtils
 					.toByteArray(new FileInputStream(file, senseServicesContext.getSenseServices().getSenseContext()));
 			IOUtils.write(data, new FileOutputStream(file));
-			this.callbackContext
-					.sendPluginResult(new PluginResult(PluginResult.Status.OK, Base64.encode(data, Base64.DEFAULT)));
+			this.callbackContext.sendPluginResult(
+					new PluginResult(PluginResult.Status.OK, Base64.encodeToString(data, Base64.DEFAULT)));
 		} catch (IOException e) {
 			Log.e(getLogTag(), "Problem writing file. Returning error.", e);
 			this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, false));
