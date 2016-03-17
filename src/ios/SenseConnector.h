@@ -9,7 +9,6 @@
 #import <Cordova/CDV.h>
 
 #define SECURITY_SERVER_URL    @"${sec-server-url}"
-#define APP_SERVER_URL         @"${app-server-url}"
 
 @interface SenseConnector : CDVPlugin
 - (void)exitApp:(CDVInvokedUrlCommand*)command;
@@ -19,6 +18,7 @@
 
 - (NSDictionary*)createJSON:(NSObject*)code withMessage:(NSString*)message;
 
-@property NSString* loginCommmandId;
- 
+
+@property (nonatomic, strong) NSString* loginCommmandId;
+
 @end
