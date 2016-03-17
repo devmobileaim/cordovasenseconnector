@@ -1,8 +1,6 @@
-package ch.aimservices.android.plugin.action;
+package ch.aimservices.android.plugin.action.session;
 
-import android.util.Base64;
-import android.util.Log;
-import android.webkit.WebView;
+import java.util.List;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -10,7 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import android.util.Base64;
+import android.util.Log;
+import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
 
@@ -36,7 +36,6 @@ public class LoginAction extends AbstractSessionAction {
         Log.d(getLogTag(), "LoginAction:execute -> " + action + ", " + callbackContext.getCallbackId());
         try {
             this.callbackContext = callbackContext;
-
             final JSONObject options = args.getJSONObject(0);
             final String username = options.getString("username");
             final String password = new String(Base64.decode(options.getString("password"), Base64.DEFAULT));

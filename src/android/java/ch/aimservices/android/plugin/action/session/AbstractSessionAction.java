@@ -1,4 +1,4 @@
-package ch.aimservices.android.plugin.action;
+package ch.aimservices.android.plugin.action.session;
 
 import android.os.Build;
 import android.util.Log;
@@ -10,8 +10,9 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
 
-import ch.aimservices.android.plugin.BaseAction;
+import ch.aimservices.android.plugin.action.BaseAction;
 import ch.aimservices.android.plugin.SenseServicesContext;
+import ch.aimservices.android.plugin.action.LoginErrorHandler;
 import ch.aimservices.android.proxy.ConfiguratorRegistry;
 import ch.aimservices.android.proxy.ProxyConfigurator;
 import ch.aimservices.android.reflection.Reflections;

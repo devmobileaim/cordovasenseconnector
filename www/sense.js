@@ -30,5 +30,26 @@ window.sense = {
 	
 	changePassword: function(options, params) {
 		this._exec("changePassword", [params], options);
+	},
+
+	createItemAtPath: function(options, params) {
+		this._exec("createItemAtPath", [params], options);
+	},
+
+	itemExistsAtPath: function(options, params) {
+		this._exec("itemExistsAtPath", [params], options);
+	},
+
+	contentsAtPath: function(options, params) {
+		this._exec("contentsAtPath", [params], options);
+	},
+
+	moveItemAtPath: function(options, params) {
+		this._exec("moveItemAtPath", [params], options);
+	},
+
+	removeItemAtPath: function(options, params) {
+		this._exec("removeItemAtPath", [params], options);
 	}
+  
 };

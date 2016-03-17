@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import java.io.File;
 import java.util.Collection;
 
-import ch.aimservices.android.plugin.BaseAction;
 import ch.aimservices.android.plugin.SenseServicesContext;
 import ch.sysmosoft.sense.android.core.service.Sense;
 

@@ -1,13 +1,9 @@
 package ch.aimservices.android.plugin;
 
-import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
-import android.view.View;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
+import java.io.File;
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
@@ -18,16 +14,25 @@ import org.apache.cordova.ICordovaHttpAuthHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.File;
-import java.net.PasswordAuthentication;
-import java.util.ArrayList;
-import java.util.Collection;
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
-import ch.aimservices.android.plugin.action.ChangePwdAction;
-import ch.aimservices.android.plugin.action.EnrollAction;
+import ch.aimservices.android.plugin.action.Action;
+import ch.aimservices.android.plugin.action.session.ChangePwdAction;
+import ch.aimservices.android.plugin.action.filesystem.CreateItemAction;
+import ch.aimservices.android.plugin.action.session.EnrollAction;
 import ch.aimservices.android.plugin.action.ExitAppAction;
+import ch.aimservices.android.plugin.action.filesystem.GetItemAction;
 import ch.aimservices.android.plugin.action.InitializeAction;
-import ch.aimservices.android.plugin.action.LoginAction;
+import ch.aimservices.android.plugin.action.filesystem.ItemExistAction;
+import ch.aimservices.android.plugin.action.session.LoginAction;
+import ch.aimservices.android.plugin.action.filesystem.MoveItemAction;
+import ch.aimservices.android.plugin.action.filesystem.RemoveItemAction;
 import ch.aimservices.android.plugin.action.TerminateAction;
 import ch.aimservices.android.plugin.action.UpdateAppAction;
 
@@ -78,7 +83,7 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
     }
 
     private boolean internalExecute(final boolean onlyExternal, final String action, final JSONArray args, final CallbackContext callbackContext) {
-        final Action act = getAction(action);
+		final Action act = getAction(action);
         if (act != null && !(onlyExternal && act.internal())) {
             try {
                 return act.execute(action, args, callbackContext);
@@ -99,13 +104,23 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
     }
 
     private void initializeActions() {
+		// Lifecycle actions
         actions.add(new InitializeAction(systemWebView, this.cordova, this));
+        actions.add(new TerminateAction(systemWebView, this.cordova, this));
+        actions.add(new ExitAppAction(systemWebView, this.cordova, this));
+
+		// Session actions
         actions.add(new LoginAction(systemWebView, this.cordova, this));
         actions.add(new EnrollAction(systemWebView, this.cordova, this));
         actions.add(new ChangePwdAction(systemWebView, this.cordova, this));
-        actions.add(new TerminateAction(systemWebView, this.cordova, this));
-        actions.add(new ExitAppAction(systemWebView, this.cordova, this));
 		actions.add(new UpdateAppAction(systemWebView, this.cordova, this));
+
+		// File system actions
+		actions.add(new CreateItemAction(systemWebView, this.cordova, this));
+		actions.add(new GetItemAction(systemWebView, this.cordova, this));
+		actions.add(new ItemExistAction(systemWebView, this.cordova, this));
+		actions.add(new MoveItemAction(systemWebView, this.cordova, this));
+		actions.add(new RemoveItemAction(systemWebView, this.cordova, this));
     }
 
     private void initializeSense() {

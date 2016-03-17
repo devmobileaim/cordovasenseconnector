@@ -1,9 +1,4 @@
-package ch.aimservices.android.plugin;
-
-import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
-import android.webkit.WebView;
+package ch.aimservices.android.plugin.action;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -11,7 +6,14 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.webkit.WebView;
+
+import ch.aimservices.android.plugin.SenseServicesContext;
 import ch.sysmosoft.sense.android.core.service.Sense;
+import ch.sysmosoft.sense.android.core.service.context.SenseContext;
 
 /**
  * Created by Android Studio
@@ -43,7 +45,7 @@ public abstract class BaseAction implements Action {
         return false;
     }
 
-    protected Context getContext() {
+	protected Context getContext() {
         return getCordovaActivity().getApplicationContext();
     }
 
@@ -54,6 +56,10 @@ public abstract class BaseAction implements Action {
     protected Sense.SessionService getSenseSessionService() {
         return this.senseServicesContext.getSessionService();
     }
+
+	protected SenseContext getSenseContext() {
+		return this.senseServicesContext.getSenseServices().getSenseContext();
+	}
 
     protected String getLogTag() {
         return getClass().getSimpleName();

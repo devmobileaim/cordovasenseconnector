@@ -1,4 +1,4 @@
-package ch.aimservices.android.plugin;
+package ch.aimservices.android.plugin.action;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONArray;

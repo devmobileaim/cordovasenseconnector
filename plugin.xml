@@ -55,19 +55,25 @@
     	</config-file>
     	
 		<!-- Java sources -->
-		<source-file src="src/android/java/ch/aimservices/android/plugin/Action.java" target-dir="src/ch/aimservices/android/plugin" />
-		<source-file src="src/android/java/ch/aimservices/android/plugin/BaseAction.java" target-dir="src/ch/aimservices/android/plugin" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/SenseConnector.java" target-dir="src/ch/aimservices/android/plugin" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/SenseServicesContext.java" target-dir="src/ch/aimservices/android/plugin" />
-		<source-file src="src/android/java/ch/aimservices/android/plugin/action/AbstractSessionAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
-		<source-file src="src/android/java/ch/aimservices/android/plugin/action/ChangePwdAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
-		<source-file src="src/android/java/ch/aimservices/android/plugin/action/EnrollAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/Action.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/BaseAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/action/ExitAppAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/action/InitializeAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
-		<source-file src="src/android/java/ch/aimservices/android/plugin/action/LoginAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/action/LoginErrorHandler.java" target-dir="src/ch/aimservices/android/plugin/action" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/action/TerminateAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
 		<source-file src="src/android/java/ch/aimservices/android/plugin/action/UpdateAppAction.java" target-dir="src/ch/aimservices/android/plugin/action" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/filesystem/AbstractFileSystemAction.java" target-dir="src/ch/aimservices/android/plugin/action/filesystem/" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/filesystem/CreateItemAction.java" target-dir="src/ch/aimservices/android/plugin/action/filesystem" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/filesystem/GetItemAction.java" target-dir="src/ch/aimservices/android/plugin/action/filesystem" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/filesystem/ItemExistAction.java" target-dir="src/ch/aimservices/android/plugin/action/filesystem" />			
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/filesystem/MoveItemAction.java" target-dir="src/ch/aimservices/android/plugin/action/filesystem" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/filesystem/RemoveItemAction.java" target-dir="src/ch/aimservices/android/plugin/action/filesystem" />					
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/session/AbstractSessionAction.java" target-dir="src/ch/aimservices/android/plugin/action/session" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/session/ChangePwdAction.java" target-dir="src/ch/aimservices/android/plugin/action/session" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/session/EnrollAction.java" target-dir="src/ch/aimservices/android/plugin/action/session" />
+		<source-file src="src/android/java/ch/aimservices/android/plugin/action/session/LoginAction.java" target-dir="src/ch/aimservices/android/plugin/action/session" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/BaseProxyConfigurator.java" target-dir="src/ch/aimservices/android/proxy" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/ConfiguratorRegistry.java" target-dir="src/ch/aimservices/android/proxy" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/ProxyConfigurator.java" target-dir="src/ch/aimservices/android/proxy" />

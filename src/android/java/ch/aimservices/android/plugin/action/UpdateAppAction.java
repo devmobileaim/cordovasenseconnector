@@ -1,5 +1,11 @@
 package ch.aimservices.android.plugin.action;
 
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,13 +17,6 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import ch.aimservices.android.plugin.BaseAction;
 import ch.aimservices.android.plugin.SenseServicesContext;
 
 import static android.app.DownloadManager.Request;
