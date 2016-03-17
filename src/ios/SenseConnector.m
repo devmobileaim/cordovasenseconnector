@@ -10,6 +10,7 @@
 #import <sense/SFKInitializer.h>
 #import <sense/SFKSessionService.h>
 #import <sense/SFKNotificationName.h>
+#import <sense/SFKSecureStorage.h>
 
 const int LOGIN_OK               = 0;
 const int LOGIN_PINCODE_REQUIRED = 1;
@@ -41,18 +42,23 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 };
 
 @interface SenseConnector ()
-- (BOOL)isEnrolled:(NSString*)username;
 
-- (void)privacySettings;
-- (void)clearTraces;
-- (NSString*)decodeB64:(NSString*)value;
+    @property (nonatomic, assign) BOOL sessionReady;
+
+    - (BOOL)isEnrolled:(NSString*)username;
+    - (void)privacySettings;
+    - (void)clearTraces;
+    - (NSString*)decodeB64:(NSString*)value;
+
 @end
 
 @implementation SenseConnector
 
 - (void)pluginInitialize {
     NSLog(@"SenseConnector plugin initialized");
-    [[SFKInitializer sharedInitializer] initializeSenseWithSecurityURL:SECURITY_SERVER_URL proxyURL:APP_SERVER_URL errorBlock:^(NSError* error) {
+    self.sessionReady = NO;
+    
+    [[SFKInitializer sharedInitializer] initializeSenseWithSecurityURL:SECURITY_SERVER_URL errorBlock:^(NSError* error) {
         if (error) {
             NSString* errorMsg = [[error userInfo] objectForKey:@"NSLocalizedDescription"];
             NSString* message = [NSString stringWithFormat:@"Something went wrong here.\nError: %@", errorMsg];
@@ -125,6 +131,10 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     if ([self isEnrolled:username]) {
         // call createSessionWithUsername only if deviced is enrolled
         [SFKSessionService createSessionWithUsername:username password:password errorBlock:^(NSError* error){
+            if (error == nil) {
+                self.sessionReady = YES;
+            }
+            
             loginCallback(error, self, command);
         }];
     } else {
@@ -143,6 +153,10 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSString* pincode = [arguments valueForKey:@"pincode"];
     NSLog(@"Logging in to Sense\n%@", [NSString stringWithFormat:@"Command: %@", command]);
     [SFKSessionService enrollUsername:username password:password pin:pincode errorBlock:^(NSError* error) {
+        if (error == nil) {
+            self.sessionReady = YES;
+        }
+        
         loginCallback(error, self, command);
     }];
 }
@@ -160,8 +174,97 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSString* newPassword = [self decodeB64:[arguments valueForKey:@"newPassword"]];
     NSLog(@"Changing password \n%@", [NSString stringWithFormat:@"Command: %@", command]);
     [SFKSessionService changePassword:oldPassword withNewPassword:newPassword forUsername:username errorBlock:^(NSError* error) {
+        if (error == nil) {
+            self.sessionReady = YES;
+        }
+        
         loginCallback(error, self, command);
     }];
+}
+
+#pragma mark file system management
+- (id<SFKSecureStorageProtocol>)secureStorage{
+    if([SFKSecureStorage isAvailable] && self.sessionReady) {
+        return [SFKSecureStorage secureStorage];
+    }
+    
+    return nil;
+}
+
+- (void)itemExistsAtPath:(CDVInvokedUrlCommand*)command{
+    NSDictionary* arguments = [command argumentAtIndex:0];
+    NSString* path = [arguments valueForKey:@"path"];
+    
+    id<SFKSecureStorageProtocol> secureStorage = [self secureStorage];
+    
+    if (secureStorage) {
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[secureStorage itemExistsAtPath:path]] callbackId:command.callbackId];
+    }else{
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
+    }
+}
+
+- (void)createItemAtPath:(CDVInvokedUrlCommand*)command{
+    NSDictionary* arguments = [command argumentAtIndex:0];
+    NSString* path = [arguments valueForKey:@"path"];
+    NSData* data = [[NSData alloc] initWithBase64EncodedString:[arguments valueForKey:@"data"] options:0];
+    
+    id<SFKSecureStorageProtocol> secureStorage = [self secureStorage];
+    
+    if (secureStorage) {
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[secureStorage createItemAtPath:path contents:data]] callbackId:command.callbackId];
+    }else{
+      [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
+    }
+}
+
+- (void)contentsAtPath:(CDVInvokedUrlCommand*)command{
+    NSDictionary* arguments = [command argumentAtIndex:0];
+    NSString* path = [arguments valueForKey:@"path"];
+    
+    id<SFKSecureStorageProtocol> secureStorage = [self secureStorage];
+    
+    if (secureStorage) {
+        NSData* data = [secureStorage contentsAtPath:path];
+        
+        if (data) {
+            NSString* dataAsString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:dataAsString] callbackId:command.callbackId];
+            
+        }else{
+            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
+        }
+        
+    }else{
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
+    }
+}
+
+- (void)moveItemAtPath:(CDVInvokedUrlCommand*)command{
+    NSDictionary* arguments = [command argumentAtIndex:0];
+    NSString* currentPath  = [arguments valueForKey:@"currentPath"];
+    NSString* newPath  = [arguments valueForKey:@"newPath"];
+    
+    id<SFKSecureStorageProtocol> secureStorage = [self secureStorage];
+    
+    if (secureStorage) {
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[secureStorage moveItemAtPath:currentPath toPath:newPath error:nil]] callbackId:command.callbackId];
+    }else{
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
+    }
+    
+}
+- (void)removeItemAtPath:(CDVInvokedUrlCommand*)command{
+    NSDictionary* arguments = [command argumentAtIndex:0];
+    NSString* path = [arguments valueForKey:@"path"];
+    
+    id<SFKSecureStorageProtocol> secureStorage = [self secureStorage];
+    
+    if (secureStorage) {
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[secureStorage removeItemAtPath:path error:nil]] callbackId:command.callbackId];
+    }else{
+        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR] callbackId:command.callbackId];
+    }
 }
 
 - (void)privacySettings {
