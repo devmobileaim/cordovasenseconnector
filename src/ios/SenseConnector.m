@@ -283,8 +283,10 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 }
 
 - (void)clearTraces {
-    [self.webView stringByEvaluatingJavaScriptFromString:@"localStorage.clear();"];
-    [self.webView stringByEvaluatingJavaScriptFromString:@"sessionStorage.clear();"];
+    if ([self.webView isKindOfClass:[UIWebView class]]) {
+        [(UIWebView*)self.webView stringByEvaluatingJavaScriptFromString:@"localStorage.clear();"];
+        [(UIWebView*)self.webView stringByEvaluatingJavaScriptFromString:@"sessionStorage.clear();"];
+    }
     
     // Deleting all the cookies
     for(NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
