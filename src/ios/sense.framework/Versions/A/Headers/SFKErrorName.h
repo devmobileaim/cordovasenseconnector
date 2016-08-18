@@ -31,6 +31,13 @@ extern NSInteger const SFK_ERROR_CODE_NSEXCEPTION;
 extern NSInteger const SFK_ERROR_CODE_FRAMEWORK_NOT_INITIALIZED;
 
 /**
+ *  SFK_ERROR_CODE_DEVICE_JAILBROKEN
+ *
+ *  This error code means that the device is jailbroken.
+ */
+extern NSInteger const SFK_ERROR_CODE_DEVICE_JAILBROKEN;
+
+/**
  *  SFK_ERROR_CODE_IDENTIFICATION
  *
  *  This error code means that the username or the shared secret are wrong.
@@ -137,8 +144,8 @@ extern NSInteger const SFK_ERROR_CODE_DEVICE_LOCKED;
 /**
  *  SFK_ERROR_CODE_DEVICE_NOT_COMPLIANT
  *
- *  This error code means that the device is not available
- *  to use sense.
+ *  This error code means that the device is not compliant
+ *  with the rules established by the administrator.
  */
 extern NSInteger const SFK_ERROR_CODE_DEVICE_NOT_COMPLIANT;
 
@@ -222,6 +229,14 @@ extern NSInteger const SFK_ERROR_CODE_MAX_ACCESS_TRY;
  *  This parameter is required by the administrator.
  */
 extern NSInteger const SFK_ERROR_CODE_LOCATION_REQUIRED;
+
+/**
+ *  SFK_ERROR_CODE_USER_SESSION_CLOSED
+ *
+ *  This error code means that the user session is closed.
+ *  You must create a new user session.
+ */
+extern NSInteger const SFK_ERROR_CODE_USER_SESSION_CLOSED;
 
 /**
  *  SFK_ERROR_CODE_STORAGE_INDEX_WRITTING
