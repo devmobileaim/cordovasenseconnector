@@ -48,7 +48,7 @@ To create a blank project that will serve as a base for html sources, the proced
 - cd ProjectName
 - cordova platform add ios
 - cordova platform add android
-- **Register on the Sysmosoft web site** : http://www.sysmosoft.com/sdk/sense-sdk.html
+- **Register on the Sysmosoft web site** : https://files.sysmosoft.com/sdk/sense-sdk.html
 - cordova plugins add https://github.com/devmobileaim/cordovasenseconnector.git
 - cordova build ios
 - cordova build android
