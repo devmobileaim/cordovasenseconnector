@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
     id="ch.aimservices.cordova.plugins.sense"
-    version="1.0.3">
+    version="1.0.4">
     
     <name>Sense-Connector</name>
     <description>Connector between Cordova applications and Sysmosoft's Sense Framework</description>
@@ -24,6 +24,7 @@
     	<config-file target="AndroidManifest.xml" parent="/manifest">
 			<uses-permission android:name="android.permission.INTERNET" />
 			<uses-permission android:name="android.permission.BLUETOOTH" />
+			<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 		</config-file>
 		
     	<config-file target="AndroidManifest.xml" parent="/manifest/application">
@@ -36,7 +37,7 @@
 				<!-- SDK version -->
             	<meta-data
                 	android:name="ch.sysmosoft.sense.android.sdk.version"
-                	android:value="3.9.0" />
+                	android:value="3.11.2" />
 			</service>
 
 			<activity android:name="ch.aimservices.android.plugin.SenseConnector" android:label="@string/app_name">
@@ -77,7 +78,6 @@
 		<source-file src="src/android/java/ch/aimservices/android/proxy/BaseProxyConfigurator.java" target-dir="src/ch/aimservices/android/proxy" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/ConfiguratorRegistry.java" target-dir="src/ch/aimservices/android/proxy" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/ProxyConfigurator.java" target-dir="src/ch/aimservices/android/proxy" />
-		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/HoneycombConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/IceCreamSandwichConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/JellyBeanConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
 		<source-file src="src/android/java/ch/aimservices/android/proxy/impl/KitKatConfigurator.java" target-dir="src/ch/aimservices/android/proxy/impl" />
@@ -85,20 +85,15 @@
 		<source-file src="src/android/java/ch/aimservices/android/reflection/Reflections.java" target-dir="src/ch/aimservices/android/reflection" />
 
 		<!-- so Libs -->
-		<resource-file src="src/android/libs/armeabi/libdatabase_sqlcipher.so" target="libs/armeabi/libdatabase_sqlcipher.so" />
-		<resource-file src="src/android/libs/armeabi/libsqlcipher_android.so" target="libs/armeabi/libsqlcipher_android.so" />
-		<resource-file src="src/android/libs/armeabi/libstlport_shared.so" target="libs/armeabi/libstlport_shared.so" />
+		<resource-file src="src/android/libs/armeabi/libsqlcipher.so" target="libs/armeabi/libsqlcipher.so" />
+		<resource-file src="src/android/libs/armeabi-v7a/libsqlcipher.so" target="libs/armeabi-v7a/libsqlcipher.so" />
+		<resource-file src="src/android/libs/x86/libsqlcipher.so" target="libs/x86/libsqlcipher.so" />
 
-		<resource-file src="src/android/libs/x86/libdatabase_sqlcipher.so" target="libs/x86/libdatabase_sqlcipher.so" />
-		<resource-file src="src/android/libs/x86/libsqlcipher_android.so" target="libs/x86/libsqlcipher_android.so" />
-		<resource-file src="src/android/libs/x86/libstlport_shared.so" target="libs/x86/libstlport_shared.so" />
-		
-		<!-- icudt46l.zip -->
-		<resource-file src="src/android/assets/icudt46l.zip" target="assets/icudt46l.zip" />
-		
-		<!-- Sense SDK jar -->
+		<!-- Plugin's libraries -->
 		<resource-file src="src/android/libs/commons-io-2.4.jar" target="libs/commons-io-2.4.jar" />
-		<resource-file src="src/android/libs/sense-sdk-android-lib-3.9.0.jar" target="libs/sense-sdk-android-lib-3.9.0.jar" />
+		<!-- Sense SDK jars -->
+		<resource-file src="src/android/libs/sense-sdk-android-lib-3.11.2.jar" target="libs/sense-sdk-android-lib-3.11.2.jar" />
+		<resource-file src="src/android/libs/android-database-sqlcipher-3.5.3.jar" target="libs/android-database-sqlcipher-3.5.3.jar" />
 
 		<!-- Properties -->
 		<resource-file src="src/android/assets/sense-config.properties" target="assets/sense-config.properties" />
@@ -113,10 +108,6 @@
     		</feature>
     	</config-file>
     	
-    	<config-file target="*-Info.plist" parent="CFBundleSignature">
-    		<string>ResourceRules.plist</string>
-    	</config-file>
-    	
     	<framework src="libz.dylib" />
     	<framework src="libxml2.dylib" />
     	<framework src="libc++.dylib" />
@@ -124,13 +115,14 @@
     	<framework src="SystemConfiguration.framework" />
     	<framework src="Security.framework" />
     	<framework src="CFNetwork.framework" />
+    	<framework src="CoreLocation.framework" />
+    	<framework src="WebKit.framework" />
     	<framework src="src/ios/sense.framework" custom="true" />
 
     	<header-file src="src/ios/SenseConnector.h" />
     	<source-file src="src/ios/SenseConnector.m" />
     	
-    	<resource-file src="src/ios/osmosys.properties" />
-    	<resource-file src="src/ios/ResourceRules.plist" />
+    	<resource-file src="src/ios/sense-config.properties" />
 
     </platform>
 </plugin>
