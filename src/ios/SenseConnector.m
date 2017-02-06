@@ -18,24 +18,33 @@ const int LOGIN_UPDATE_AVAILABLE = 2;
 const int SESSION_EXPIRED        = 3;
 const int SESSION_LOCKED         = 4;
 
-typedef void (^LoginBlock)(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command);
-LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command) {
+typedef void (^LoginBlock)(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri);
+LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri) {
     NSLog(@"\t%@", @"Inside callback");
     CDVPluginResult* loginResult = nil;
     if (error) {
         NSString* errorMsg = [[error userInfo] objectForKey:@"NSLocalizedDescription"];
         NSString* message = [NSString stringWithFormat:@"Unable to login.\nError: %@", errorMsg];
         NSLog(@"\t%@", message);
-        
+
         NSDictionary* json = [connector createJSON:@"ERR_LOGIN_FAILED" withMessage:errorMsg];
         loginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:json];
     } else {
         NSString* message = @"Successfully logged-in.";
         NSLog(@"\t%@", message);
-        
-        NSDictionary* json = [connector createJSON:[NSNumber numberWithInt:LOGIN_OK] withMessage:nil];
+        NSDictionary* json;
+        if(updateUri == nil){
+            NSString* message = @"No update available, sending LOGIN_OK";
+            NSLog(@"\t%@", message);
+            json = [connector createJSON:[NSNumber numberWithInt:LOGIN_OK] withMessage:nil];
+        } else {
+            NSString* message = [NSString stringWithFormat:@"Update available at %@, sending LOGIN_UPDATE_AVAILABLE", updateUri];
+            NSLog(@"\t%@", message);
+            json = [connector createJSON:[NSNumber numberWithInt:LOGIN_UPDATE_AVAILABLE] withMessage:updateUri];
+        }
         loginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json];
         [loginResult setKeepCallbackAsBool:TRUE];
+
     }
     connector.loginCommmandId = command.callbackId;
     [connector.commandDelegate sendPluginResult:loginResult callbackId:command.callbackId];
@@ -44,6 +53,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 @interface SenseConnector ()
 
     @property (nonatomic, assign) BOOL sessionReady;
+    @property (nonatomic, strong) NSString* updateUri;
 
     - (BOOL)isEnrolled:(NSString*)username;
     - (void)privacySettings;
@@ -57,7 +67,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 - (void)pluginInitialize {
     NSLog(@"SenseConnector plugin initialized");
     self.sessionReady = NO;
-    
+
     [[SFKInitializer sharedInitializer] initializeSenseWithSecurityURL:SECURITY_SERVER_URL errorBlock:^(NSError* error) {
         if (error) {
             NSString* errorMsg = [[error userInfo] objectForKey:@"NSLocalizedDescription"];
@@ -65,7 +75,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
             NSLog(@"\t%@", message);
         }
     }];
-    
+
     /* SENSE:
      * When a user authenticates himself on a server, Sense framework will receive the security settings set by the admin.
      * By registering to these two notifications, you will know when the inactivity timers fire
@@ -73,7 +83,8 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
      */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayInactivityVC) name:SFK_INACTIVITY_TIMEOUT_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionTimeout) name:SFK_OFFLINE_TIMEOUT_NOTIFICATION object:nil];
-    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAvailable:) name:SFK_UPDATE_AVAILABLE_NOTIFICATION object:nil];
 }
 
 - (void)displayInactivityVC {
@@ -86,6 +97,12 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSLog(@"Sense session time-out notification");
     NSDictionary* json = [self createJSON:[NSNumber numberWithInt:SESSION_EXPIRED] withMessage:nil];
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
+}
+
+- (void)updateAvailable:(NSNotification *)notification {
+    NSLog(@"Update available notification");
+    NSString* uri = notification.object[@"uri"];
+    self.updateUri = uri;
 }
 
 - (BOOL)isEnrolled:(NSString*)username {
@@ -107,15 +124,17 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSDictionary* arguments = [command argumentAtIndex:0];
     NSString* url = [arguments valueForKey:@"url"];
     NSLog(@"Updating application from %@", url);
-    
+
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Application update"
                                                     message:[NSString stringWithFormat:@"Url: %@", url]
                                                    delegate:nil
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
     [alert show];
-    
+
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    self.updateUri = nil;
+    NSLog(@"App should be updating now");
 }
 
 - (void)exitApp:(CDVInvokedUrlCommand*)command {
@@ -134,13 +153,13 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
             if (error == nil) {
                 self.sessionReady = YES;
             }
-            
-            loginCallback(error, self, command);
+
+            loginCallback(error, self, command, self.updateUri);
         }];
     } else {
         NSString* message = @"Unable to login.\nError: You need to enroll a user first";
         NSLog(@"\t%@", message);
-        
+
         NSDictionary* json = [self createJSON:[NSNumber numberWithInt:LOGIN_PINCODE_REQUIRED] withMessage:nil];
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:command.callbackId];
     }
@@ -156,8 +175,8 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
         if (error == nil) {
             self.sessionReady = YES;
         }
-        
-        loginCallback(error, self, command);
+
+        loginCallback(error, self, command, self.updateUri);
     }];
 }
 
@@ -177,8 +196,8 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
         if (error == nil) {
             self.sessionReady = YES;
         }
-        
-        loginCallback(error, self, command);
+
+        loginCallback(error, self, command, self.updateUri);
     }];
 }
 
