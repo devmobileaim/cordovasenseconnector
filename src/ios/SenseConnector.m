@@ -17,6 +17,8 @@ const int LOGIN_PINCODE_REQUIRED = 1;
 const int LOGIN_UPDATE_AVAILABLE = 2;
 const int SESSION_EXPIRED        = 3;
 const int SESSION_LOCKED         = 4;
+const int BACKGROUND_DISABLE     = 5;
+
 
 typedef void (^LoginBlock)(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri);
 LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri) {
@@ -76,6 +78,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionTimeout) name:SFK_OFFLINE_TIMEOUT_NOTIFICATION object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAvailable:) name:SFK_UPDATE_AVAILABLE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBackgroundDisable) name:SFK_BACKGROUND_DISABLE_NOTIFICATION object:nil];
 }
 
 - (void)displayInactivityVC {
@@ -98,6 +101,12 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSLog(@"Update available notification");
     NSString* uri = notification.object[@"uri"];
     NSDictionary* json = [self createJSON:[NSNumber numberWithInt:LOGIN_UPDATE_AVAILABLE] withMessage:uri];
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
+}
+
+- (void)onBackgroundDisable {
+    NSLog(@"The user cannot use the application in background");
+    NSDictionary* json = [self createJSON:[NSNumber numberWithInt:BACKGROUND_DISABLE] withMessage:nil];
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
 }
 
