@@ -18,7 +18,6 @@ const int LOGIN_UPDATE_AVAILABLE = 2;
 const int SESSION_EXPIRED        = 3;
 const int SESSION_LOCKED         = 4;
 
-
 typedef void (^LoginBlock)(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri);
 LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri) {
     NSLog(@"\t%@", @"Inside callback");
@@ -99,7 +98,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSLog(@"Update available notification");
     NSString* uri = notification.object[@"uri"];
     NSDictionary* json = [self createJSON:[NSNumber numberWithInt:LOGIN_UPDATE_AVAILABLE] withMessage:uri];
-    //[self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
 }
 
 - (BOOL)isEnrolled:(NSString*)username {
