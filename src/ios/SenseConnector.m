@@ -18,6 +18,7 @@ const int LOGIN_UPDATE_AVAILABLE = 2;
 const int SESSION_EXPIRED        = 3;
 const int SESSION_LOCKED         = 4;
 const int BACKGROUND_DISABLE     = 5;
+const int OFFLINE_MODE_EXPIRED   = 6;
 
 
 typedef void (^LoginBlock)(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri);
@@ -71,23 +72,30 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 
     /* SENSE:
      * When a user authenticates himself on a server, Sense framework will receive the security settings set by the admin.
-     * By registering to these two notifications, you will know when the inactivity timers fire
+     * By registering to these notifications, you will know when the inactivity timers fire
      * and when the session is over. You have to implement how these notifications are handled on your application.
      */
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayInactivityVC) name:SFK_INACTIVITY_TIMEOUT_NOTIFICATION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionTimeout) name:SFK_OFFLINE_TIMEOUT_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInactivityTimeout) name:SFK_INACTIVITY_TIMEOUT_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onOfflineTimeout) name:SFK_OFFLINE_TIMEOUT_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onSessionTimeout) name:SFK_SESSION_TIMEOUT_NOTIFICATION object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateAvailable:) name:SFK_UPDATE_AVAILABLE_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onUpdateAvailable:) name:SFK_UPDATE_AVAILABLE_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBackgroundDisable) name:SFK_BACKGROUND_DISABLE_NOTIFICATION object:nil];
 }
 
-- (void)displayInactivityVC {
+- (void)onInactivityTimeout {
     NSLog(@"Sense inactivity time-out notification");
     NSDictionary* json = [self createJSON:[NSNumber numberWithInt:SESSION_LOCKED] withMessage:nil];
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
 }
 
-- (void)sessionTimeout {
+- (void)onOfflineTimeout {
+    NSLog(@"Sense offline mode is no more available");
+    NSDictionary* json = [self createJSON:[NSNumber numberWithInt:OFFLINE_MODE_EXPIRED] withMessage:nil];
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
+}
+
+- (void)onSessionTimeout {
     NSLog(@"Sense session time-out notification");
     NSDictionary* json = [self createJSON:[NSNumber numberWithInt:SESSION_EXPIRED] withMessage:nil];
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
@@ -95,9 +103,9 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 
 /*
  It looks like Sense framework may only fires this event during login or password change, on success (before calling callback).
- In that case loginCallback will have no effect as we already send plugin result here to the javascript callback.
+ In that case loginCallback will have no effect as we already send plugin result here to the javascript login callback.
  */
-- (void)updateAvailable:(NSNotification *)notification {
+- (void)onUpdateAvailable:(NSNotification *)notification {
     NSLog(@"Update available notification");
     NSString* uri = notification.object[@"uri"];
     NSDictionary* json = [self createJSON:[NSNumber numberWithInt:LOGIN_UPDATE_AVAILABLE] withMessage:uri];
