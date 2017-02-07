@@ -18,6 +18,7 @@ const int LOGIN_UPDATE_AVAILABLE = 2;
 const int SESSION_EXPIRED        = 3;
 const int SESSION_LOCKED         = 4;
 
+
 typedef void (^LoginBlock)(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri);
 LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvokedUrlCommand* command, NSString* updateUri) {
     NSLog(@"\t%@", @"Inside callback");
@@ -30,23 +31,14 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
         NSDictionary* json = [connector createJSON:@"ERR_LOGIN_FAILED" withMessage:errorMsg];
         loginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:json];
     } else {
-        NSString* message = @"Successfully logged-in.";
+        NSString* message = @"Successfully logged-in, sending LOGIN_OK.";
         NSLog(@"\t%@", message);
-        NSDictionary* json;
-        if(updateUri == nil){
-            NSString* message = @"No update available, sending LOGIN_OK";
-            NSLog(@"\t%@", message);
-            json = [connector createJSON:[NSNumber numberWithInt:LOGIN_OK] withMessage:nil];
-        } else {
-            NSString* message = [NSString stringWithFormat:@"Update available at %@, sending LOGIN_UPDATE_AVAILABLE", updateUri];
-            NSLog(@"\t%@", message);
-            json = [connector createJSON:[NSNumber numberWithInt:LOGIN_UPDATE_AVAILABLE] withMessage:updateUri];
-        }
+        NSDictionary* json = [connector createJSON:[NSNumber numberWithInt:LOGIN_OK] withMessage:nil];
         loginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json];
+        //we keep the callback active for further notifications (such as session expired)
         [loginResult setKeepCallbackAsBool:TRUE];
 
     }
-    connector.loginCommmandId = command.callbackId;
     [connector.commandDelegate sendPluginResult:loginResult callbackId:command.callbackId];
 };
 
@@ -99,10 +91,15 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
 }
 
+/*
+ It looks like Sense framework may only fires this event during login or password change, on success (before calling callback).
+ In that case loginCallback will have no effect as we already send plugin result here to the javascript callback.
+ */
 - (void)updateAvailable:(NSNotification *)notification {
     NSLog(@"Update available notification");
     NSString* uri = notification.object[@"uri"];
-    self.updateUri = uri;
+    NSDictionary* json = [self createJSON:[NSNumber numberWithInt:LOGIN_UPDATE_AVAILABLE] withMessage:uri];
+    //[self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:json] callbackId:self.loginCommmandId];
 }
 
 - (BOOL)isEnrolled:(NSString*)username {
@@ -148,6 +145,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 
     NSLog(@"Logging in to Sense\n%@", [NSString stringWithFormat:@"Command: %@", command]);
     if ([self isEnrolled:username]) {
+        self.loginCommmandId = command.callbackId;
         // call createSessionWithUsername only if deviced is enrolled
         [SFKSessionService createSessionWithUsername:username password:password errorBlock:^(NSError* error){
             if (error == nil) {
@@ -171,6 +169,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSString* password = [self decodeB64:[arguments valueForKey:@"password"]];
     NSString* pincode = [arguments valueForKey:@"pincode"];
     NSLog(@"Logging in to Sense\n%@", [NSString stringWithFormat:@"Command: %@", command]);
+    self.loginCommmandId = command.callbackId;
     [SFKSessionService enrollUsername:username password:password pin:pincode errorBlock:^(NSError* error) {
         if (error == nil) {
             self.sessionReady = YES;
@@ -192,6 +191,7 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     NSString* oldPassword = [self decodeB64:[arguments valueForKey:@"oldPassword"]];
     NSString* newPassword = [self decodeB64:[arguments valueForKey:@"newPassword"]];
     NSLog(@"Changing password \n%@", [NSString stringWithFormat:@"Command: %@", command]);
+    self.loginCommmandId = command.callbackId;
     [SFKSessionService changePassword:oldPassword withNewPassword:newPassword forUsername:username errorBlock:^(NSError* error) {
         if (error == nil) {
             self.sessionReady = YES;
