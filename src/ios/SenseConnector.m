@@ -179,6 +179,11 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
     }
 }
 
+- (void)logout:(CDVInvokedUrlCommand*)command {
+    NSLog(@"Logout user");
+    [SFKSessionService logOut];
+}
+
 - (void)enroll:(CDVInvokedUrlCommand*)command {
     NSDictionary* arguments = [command argumentAtIndex:0];
     NSString* username = [arguments valueForKey:@"username"];
