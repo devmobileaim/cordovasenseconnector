@@ -17,6 +17,7 @@
 - (void)login:(CDVInvokedUrlCommand*)command;
 - (void)enroll:(CDVInvokedUrlCommand*)command;
 - (void)changePassword:(CDVInvokedUrlCommand*)command;
+- (void)logout:(CDVInvokedUrlCommand*)command;
 
 #pragma mark file system management
 - (void)itemExistsAtPath:(CDVInvokedUrlCommand*)command;
