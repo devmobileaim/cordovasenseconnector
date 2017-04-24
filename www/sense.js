@@ -24,6 +24,10 @@ window.sense = {
 		this._exec("login", [params], options);
 	},
 
+	logout: function(){
+		this._exec("logout", []);
+	},
+
 	enroll: function(options, params) {
 		this._exec("enroll", [params], options);
 	},
