@@ -94,7 +94,7 @@
 		<!-- Sense SDK jars -->
 		<resource-file src="src/android/libs/sense-sdk-android-sdk-3.17.0-SNAPSHOT.jar" target="libs/sense-sdk-android-sdk-3.17.0-SNAPSHOT.jar" />
 		<resource-file src="src/android/libs/android-database-sqlcipher-3.5.3.jar" target="libs/android-database-sqlcipher-3.5.3.jar" />
-
+		<resource-file src="src/android/libs/slf4j-api-1.7.25.jar" target="libs/slf4j-api-1.7.25.jar" />
 		<!-- Properties -->
 		<resource-file src="src/android/assets/sense-config.properties" target="assets/sense-config.properties" />
     </platform>
