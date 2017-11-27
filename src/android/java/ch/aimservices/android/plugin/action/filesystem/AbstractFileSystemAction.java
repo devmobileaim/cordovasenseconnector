@@ -6,14 +6,16 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
 import ch.aimservices.android.plugin.action.BaseAction;
 
 abstract class AbstractFileSystemAction extends BaseAction {
+	private final Logger logger = LoggerFactory.getLogger(AbstractFileSystemAction.class);
 
 	public AbstractFileSystemAction(final WebView webview, final CordovaInterface cordova,
 			final SenseServicesContext senseServicesContext) {
@@ -39,7 +41,7 @@ abstract class AbstractFileSystemAction extends BaseAction {
 					JSONObject options = args.getJSONObject(0);
 					execute(action, options, callbackContext);
 				} catch (JSONException e) {
-					Log.e(getLogTag(), "Problem retrieving parameters. Returning error.", e);
+					logger.error("Problem retrieving parameters. Returning error.", e);
 					callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, false));
 				}
 			}

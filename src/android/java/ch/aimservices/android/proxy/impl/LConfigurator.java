@@ -1,11 +1,13 @@
 package ch.aimservices.android.proxy.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Proxy;
 import android.os.Parcelable;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.webkit.WebView;
 
 import java.lang.reflect.Field;
@@ -24,6 +26,7 @@ import ch.aimservices.android.proxy.ProxyConfigurator;
  */
 // TODO: rename class with final Android codename
 public class LConfigurator extends BaseProxyConfigurator implements ProxyConfigurator {
+	private final Logger logger = LoggerFactory.getLogger(LConfigurator.class);
 
     private final String applicationClassName;
 
@@ -39,7 +42,7 @@ public class LConfigurator extends BaseProxyConfigurator implements ProxyConfigu
 
     @Override
     public boolean configure(WebView webview, String host, int port) {
-        Log.d(LOG_TAG, "Setting proxy with > 4.4 API.");
+    	logger.debug("Setting proxy with > 4.4 API.");
 
         final Context appContext = webview.getContext().getApplicationContext();
         System.setProperty("http.proxyHost", host);
@@ -77,20 +80,20 @@ public class LConfigurator extends BaseProxyConfigurator implements ProxyConfigu
                 }
             }
 
-            Log.d(LOG_TAG, "Setting proxy with > 4.4 API successful!");
+            logger.debug("Setting proxy with > 4.4 API successful!");
             return true;
         } catch (ClassNotFoundException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (NoSuchFieldException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (IllegalAccessException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (IllegalArgumentException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (NoSuchMethodException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (InvocationTargetException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return false;
     }

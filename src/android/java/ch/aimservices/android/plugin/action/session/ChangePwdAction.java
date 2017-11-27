@@ -5,9 +5,10 @@ import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
@@ -19,6 +20,7 @@ import ch.aimservices.android.plugin.SenseServicesContext;
  * Time: 18:12
  */
 public class ChangePwdAction extends AbstractSessionAction {
+	private final Logger logger = LoggerFactory.getLogger(ChangePwdAction.class);
 
     public ChangePwdAction(final WebView webview, final CordovaInterface cordova, final SenseServicesContext senseServicesContext) {
         super(webview, cordova, senseServicesContext);
@@ -31,7 +33,7 @@ public class ChangePwdAction extends AbstractSessionAction {
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
-        Log.d(getLogTag(), "ChangePwdAction:execute -> " + action + ", " + callbackContext.getCallbackId());
+    	logger.debug("ChangePwdAction:execute -> " + action + ", " + callbackContext.getCallbackId());
         try {
             this.callbackContext = callbackContext;
             final JSONObject options = args.getJSONObject(0);
@@ -41,7 +43,7 @@ public class ChangePwdAction extends AbstractSessionAction {
 
             getSenseSessionService().changeEnterprisePassword(username, oldPassword.toCharArray(), newPassword.toCharArray(), this);
         } catch (JSONException e) {
-            Log.e(getLogTag(), "Problem retrieving parameters. Returning error.", e);
+        	logger.error("Problem retrieving parameters. Returning error.", e);
             error(ERR_RETRIEVING_PARAMS);
         }
         return true;

@@ -13,10 +13,11 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.ICordovaHttpAuthHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
@@ -48,7 +49,7 @@ import static ch.sysmosoft.sense.android.core.service.Sense.SessionService;
  */
 public class SenseConnector extends CordovaPlugin implements SenseServicesContext {
 
-    private static final String LOG_TAG = "SenseConnector";
+	private final Logger logger = LoggerFactory.getLogger(SenseConnector.class);
 
     private final Collection<Action> actions = new ArrayList<Action>();
 
@@ -88,7 +89,7 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
             try {
                 return act.execute(action, args, callbackContext);
             } catch (final Throwable t) {
-                Log.e(LOG_TAG, "The following error occurred while executing " + action + " action", t);
+                logger.error("The following error occurred while executing " + action + " action", t);
             }
         }
         return false;

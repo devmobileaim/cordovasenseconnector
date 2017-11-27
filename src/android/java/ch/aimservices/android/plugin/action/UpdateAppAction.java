@@ -5,6 +5,9 @@ import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -13,7 +16,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -28,6 +30,7 @@ import static android.app.DownloadManager.Request;
  * Time: 08:21
  */
 public class UpdateAppAction extends BaseAction {
+	private final Logger logger = LoggerFactory.getLogger(UpdateAppAction.class);
 
     private final DownloadManager downloadManager;
 
@@ -40,11 +43,11 @@ public class UpdateAppAction extends BaseAction {
             //check if the broadcast message is for our Enqueued download
             final long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             if (downloadReference == referenceId) {
-                Log.d(getLogTag(), "Downloading application update complete");
+            	logger.debug("Downloading application update complete");
                 //start the installation of the latest version
                 final Intent installIntent = new Intent(Intent.ACTION_VIEW);
                 final Uri downloadUri = downloadManager.getUriForDownloadedFile(downloadReference);
-				Log.d(getLogTag(), "Download uri: " + downloadUri);
+                logger.debug("Download uri: " + downloadUri);
                 installIntent.setDataAndType(downloadUri, "application/vnd.android.package-archive");
                 installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -68,7 +71,7 @@ public class UpdateAppAction extends BaseAction {
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
-        Log.d(getLogTag(), "UpdateAppAction:execute -> " + action);
+    	logger.debug("UpdateAppAction:execute -> " + action);
         try {
             this.callbackContext = callbackContext;
 
@@ -78,7 +81,7 @@ public class UpdateAppAction extends BaseAction {
             startDownload(url);
             success(0);
         } catch (final JSONException e) {
-            Log.e(getLogTag(), "Problem retrieving parameters. Returning error.", e);
+            logger.error("Problem retrieving parameters. Returning error.", e);
             error(ERR_RETRIEVING_PARAMS);
         }
         return true;

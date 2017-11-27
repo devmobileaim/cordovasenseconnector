@@ -5,10 +5,11 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
@@ -22,6 +23,7 @@ import ch.sysmosoft.sense.android.core.service.context.SenseContext;
  * Time: 11:36
  */
 public abstract class BaseAction implements Action {
+	private final Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
     protected final WebView webview;
 
@@ -61,10 +63,6 @@ public abstract class BaseAction implements Action {
 		return this.senseServicesContext.getSenseServices().getSenseContext();
 	}
 
-    protected String getLogTag() {
-        return getClass().getSimpleName();
-    }
-
     protected void success(final int code) {
         success(code, null, false);
     }
@@ -99,7 +97,7 @@ public abstract class BaseAction implements Action {
                 response.put("message", message);
             }
         } catch (JSONException e) {
-            Log.e(getLogTag(), "Error while populating response", e);
+            logger.error("Error while populating response", e);
         }
         return response;
     }

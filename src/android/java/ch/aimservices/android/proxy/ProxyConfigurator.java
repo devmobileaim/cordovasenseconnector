@@ -10,9 +10,6 @@ import android.webkit.WebView;
  * To change this template use File | Settings | File Templates.
  */
 public interface ProxyConfigurator {
-
-    public static final String LOG_TAG = "Proxy Set";
-
     public int getMaxSupportedVersion();
     public boolean configure(WebView webview, final String host, final int port);
 }

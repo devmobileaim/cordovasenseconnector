@@ -8,9 +8,10 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
@@ -18,6 +19,7 @@ import ch.sysmosoft.sense.android.core.service.context.File;
 import ch.sysmosoft.sense.android.core.service.context.FileOutputStream;
 
 public class CreateItemAction extends AbstractFileSystemAction {
+	private final Logger logger = LoggerFactory.getLogger(CreateItemAction.class);
 
 	public CreateItemAction(final WebView webview, final CordovaInterface cordova,
 			final SenseServicesContext senseServicesContext) {
@@ -31,18 +33,18 @@ public class CreateItemAction extends AbstractFileSystemAction {
 
 	@Override
 	void execute(String action, JSONObject options, CallbackContext callbackContext) {
-		Log.d(getLogTag(), "createItemAtPath:execute -> " + action + ", " + callbackContext.getCallbackId());
+		logger.debug("createItemAtPath:execute -> " + action + ", " + callbackContext.getCallbackId());
 		String path;
 		byte[] data;
 		try {
 			path = options.getString("path");
 			data = Base64.decode(options.getString("data"), Base64.DEFAULT);
 		} catch (JSONException e) {
-			Log.e(getLogTag(), "Problem retrieving parameters. Returning error.", e);
+			logger.error("Problem retrieving parameters. Returning error.", e);
 			this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, false));
 			return;
 		}
-		Log.d(getLogTag(), "creating file \"" + path + "\" (size : " + data.length + ")");
+		logger.debug("creating file \"" + path + "\" (size : " + data.length + ")");
 		java.io.File userDir = getSenseContext().getFilesDir();
 		File file = new File(userDir, path, getSenseContext());
 
@@ -52,10 +54,10 @@ public class CreateItemAction extends AbstractFileSystemAction {
 				this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, true));
 			} else {
 				this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, false));
-				Log.e(getLogTag(), "Problem creating file. Returning false.");
+				logger.error("Problem creating file. Returning false.");
 			}
 		} catch (IOException e) {
-			Log.e(getLogTag(), "Problem writing file. Returning error.", e);
+			logger.error("Problem writing file. Returning error.", e);
 			this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, false));
 		}
 	}

@@ -32,7 +32,7 @@ public class Console extends CordovaPlugin {
 		} else if ("INFO".equals(level)) {
 			logger.info(message);
 		} else if ("DEBUG".equals(level)) {
-			logger.trace(message);
+			logger.debug(message);
 		} else if ("WARN".equals(level)) {
 			logger.warn(message);
 		} else if ("ERROR".equals(level)) {
