@@ -97,6 +97,11 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
     }
 
     @Override
+    public void onApplicationUpToDate() {
+    	// Do nothing
+    }
+    
+    @Override
     public void onUpdateAvailable(final String update) {
         Log.d(getLogTag(), "Update available. " + update);
         success(LOGIN_UPDATE_AVAILABLE, update, true);
@@ -112,6 +117,12 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
     /* ======================================== */
     /* = SessionStatusListener Implementation = */
     /* ======================================== */
+
+    @Override
+    public void willExpire() {
+    	Log.d(getLogTag(), "Session is about to expire.");
+    }
+    
     @Override
     public void hasExpired() {
         Log.d(getLogTag(), "Session has expired.");
@@ -123,5 +134,5 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
     public void hasLocked() {
         Log.d(getLogTag(), "Session has been locked.");
         success(SESSION_LOCKED);
-    }
+    } 
 }
