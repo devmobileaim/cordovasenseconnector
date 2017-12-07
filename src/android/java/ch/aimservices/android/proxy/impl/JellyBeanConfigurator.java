@@ -1,7 +1,9 @@
 package ch.aimservices.android.proxy.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.os.Build;
-import android.util.Log;
 import android.webkit.WebView;
 
 import java.lang.reflect.Constructor;
@@ -19,7 +21,7 @@ import ch.aimservices.android.proxy.ProxyConfigurator;
  * To change this template use File | Settings | File Templates.
  */
 public class JellyBeanConfigurator extends BaseProxyConfigurator implements ProxyConfigurator {
-
+	private final Logger logger = LoggerFactory.getLogger(JellyBeanConfigurator.class);
     @Override
     public int getMaxSupportedVersion() {
         return Build.VERSION_CODES.JELLY_BEAN_MR2;
@@ -27,7 +29,7 @@ public class JellyBeanConfigurator extends BaseProxyConfigurator implements Prox
 
     @Override
     public boolean configure(final WebView webview, final String host, final int port) {
-        Log.d(LOG_TAG, "Setting proxy with 4.1 - 4.3 API.");
+    	logger.debug("Setting proxy with 4.1 - 4.3 API.");
 
         try {
             final Class wvcClass = Class.forName("android.webkit.WebViewClassic");
@@ -62,11 +64,11 @@ public class JellyBeanConfigurator extends BaseProxyConfigurator implements Prox
 
             updateProxyInstance.invoke(sJavaBridge, ppcont.newInstance(host, port, null));
         } catch (Exception ex) {
-            Log.e(LOG_TAG, "Setting proxy with >= 4.1 API failed with error: " + ex.getMessage());
+        	logger.error("Setting proxy with >= 4.1 API failed with error: ", ex);
             return false;
         }
 
-        Log.d(LOG_TAG, "Setting proxy with 4.1 - 4.3 API successful!");
+        logger.debug("Setting proxy with 4.1 - 4.3 API successful!");
         return true;
     }
 }

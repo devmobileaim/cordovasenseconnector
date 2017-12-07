@@ -1,6 +1,7 @@
 package ch.aimservices.android.proxy;
 
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -15,9 +16,7 @@ import java.util.Set;
  * Time: 11:17
  */
 public final class ConfiguratorRegistry {
-
-    private static final String LOG_TAG = "ConfiguratorRegistry";
-
+	private final Logger logger = LoggerFactory.getLogger(ConfiguratorRegistry.class);
     private final String applicationClassName;
 
     private final static ConfiguratorRegistry instance = new ConfiguratorRegistry();
@@ -63,7 +62,7 @@ public final class ConfiguratorRegistry {
         try {
             final Constructor<? extends ProxyConfigurator> constructor = getConstructor(cls);
             if (constructor == null) {
-                Log.e(LOG_TAG, "Unable to find a constructor for ProxyConfigurator class: " + cls.getName());
+                logger.error("Unable to find a constructor for ProxyConfigurator class: {}", cls.getName());
             } else {
                 // ensure we can call constructor
                 constructor.setAccessible(true);
@@ -71,7 +70,7 @@ public final class ConfiguratorRegistry {
             }
         } catch (Exception e) {
             // TODO: more precise error handling
-            Log.e(LOG_TAG, e.getMessage(), e);
+        	logger.error(e.getMessage(), e);
         }
     }
 

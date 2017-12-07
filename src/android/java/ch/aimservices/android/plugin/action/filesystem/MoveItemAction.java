@@ -5,14 +5,16 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
 import ch.sysmosoft.sense.android.core.service.context.File;
 
 public class MoveItemAction extends AbstractFileSystemAction {
+	private final Logger logger = LoggerFactory.getLogger(MoveItemAction.class);
 
 	public MoveItemAction(final WebView webview, final CordovaInterface cordova,
 			final SenseServicesContext senseServicesContext) {
@@ -32,11 +34,11 @@ public class MoveItemAction extends AbstractFileSystemAction {
 			path = options.getString("currentPath");
 			newPath = options.getString("newPath");
 		} catch (JSONException e) {
-			Log.e(getLogTag(), "Problem retrieving parameters. Returning error.", e);
+			logger.error("Problem retrieving parameters. Returning error.", e);
 			this.callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, false));
 			return;
 		}
-		Log.d(getLogTag(), "moving file \"" + path + "\" to \"" + newPath + "\"" );
+		logger.debug("moving file \"" + path + "\" to \"" + newPath + "\"" );
 		java.io.File userDir = getSenseContext().getFilesDir();
 		File src = new File(userDir, path, getSenseContext());
 		File dest = new File(userDir, newPath, getSenseContext());

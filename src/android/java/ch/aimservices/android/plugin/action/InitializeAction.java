@@ -1,13 +1,14 @@
 package ch.aimservices.android.plugin.action;
 
 import android.os.Environment;
-import android.util.Log;
 import android.webkit.WebView;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import static ch.sysmosoft.sense.android.core.service.Sense.SessionServiceLifecy
  * Time: 08:21
  */
 public class InitializeAction extends BaseAction implements SessionServiceLifecycleListener {
+	private final Logger logger = LoggerFactory.getLogger(InitializeAction.class);
 
     public InitializeAction(final WebView webview, final CordovaInterface cordova, final SenseServicesContext senseServicesContext) {
         super(webview, cordova, senseServicesContext);
@@ -42,7 +44,7 @@ public class InitializeAction extends BaseAction implements SessionServiceLifecy
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
-        Log.d(getLogTag(), "InitializeAction:execute -> " + action);
+        logger.debug("InitializeAction:execute -> " + action);
         // Bind sense session
         Sense.bind(getCordovaActivity(), this);
 
@@ -54,10 +56,10 @@ public class InitializeAction extends BaseAction implements SessionServiceLifecy
         final File downloadsFolder = getContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         if (downloadsFolder.isDirectory()) {
             final Collection<File> files = FileUtils.listFiles(downloadsFolder, new String[]{"apk"}, false);
-            Log.d(getLogTag(), "Old updates detected: " + files + ". Deleting them...");
+            logger.debug("Old updates detected: " + files + ". Deleting them...");
             for (File file : files) {
                 if (FileUtils.deleteQuietly(file)) {
-                    Log.d(getLogTag(), "\tFile: " + file + " deleted");
+                	logger.debug("\tFile: " + file + " deleted");
                 }
             }
         }
@@ -65,13 +67,13 @@ public class InitializeAction extends BaseAction implements SessionServiceLifecy
 
     @Override
     public void onServiceConnected(final SessionService sessionService) {
-        Log.d(getLogTag(), "Session service connected");
-        Log.d(getLogTag(), " session is " + (sessionService.isSessionOffline() ? "offline" : "online"));
+    	logger.debug("Session service connected");
+    	logger.debug(" session is " + (sessionService.isSessionOffline() ? "offline" : "online"));
         senseServicesContext.setSessionService(sessionService);
     }
 
     @Override
     public void onServiceDisconnected() {
-        Log.d(getLogTag(), "Sense service disconnected");
+    	logger.debug("Sense service disconnected");
     }
 }

@@ -5,9 +5,10 @@ import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.util.Base64;
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
@@ -19,6 +20,7 @@ import ch.aimservices.android.plugin.SenseServicesContext;
  * Time: 17:27
  */
 public class EnrollAction extends AbstractSessionAction {
+	private final Logger logger = LoggerFactory.getLogger(EnrollAction.class);
 
     public EnrollAction(final WebView webview, final CordovaInterface cordova, final SenseServicesContext senseServicesContext) {
         super(webview, cordova, senseServicesContext);
@@ -31,7 +33,7 @@ public class EnrollAction extends AbstractSessionAction {
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
-        Log.d(getLogTag(), "EnrollAction:execute -> " + action + ", " + callbackContext.getCallbackId());
+        logger.debug("EnrollAction:execute -> " + action + ", " + callbackContext.getCallbackId());
         try {
             this.callbackContext = callbackContext;
             final JSONObject options = args.getJSONObject(0);
@@ -42,7 +44,7 @@ public class EnrollAction extends AbstractSessionAction {
 
             getSenseSessionService().enrollUser(username, password.toCharArray(), pincode.toCharArray(), this);
         } catch (JSONException e) {
-            Log.e(getLogTag(), "Problem retrieving parameters. Returning error.", e);
+        	logger.error("Problem retrieving parameters. Returning error.", e);
             error(ERR_RETRIEVING_PARAMS);
         }
         return true;

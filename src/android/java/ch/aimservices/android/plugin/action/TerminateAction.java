@@ -3,8 +3,9 @@ package ch.aimservices.android.plugin.action;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import android.util.Log;
 import android.webkit.WebView;
 
 import ch.aimservices.android.plugin.SenseServicesContext;
@@ -17,6 +18,7 @@ import ch.sysmosoft.sense.android.core.service.Sense;
  * Time: 11:29
  */
 public class TerminateAction extends BaseAction {
+	private final Logger logger = LoggerFactory.getLogger(TerminateAction.class);
 
     public TerminateAction(final WebView webview, final CordovaInterface cordova, final SenseServicesContext senseServicesContext) {
         super(webview, cordova, senseServicesContext);
@@ -34,9 +36,9 @@ public class TerminateAction extends BaseAction {
 
     @Override
     public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) {
-        Log.d(getLogTag(), "TerminateAction:execute -> " + action);
+    	logger.debug("TerminateAction:execute -> " + action);
         // Bind sense session
-        Log.d(getLogTag(), "Unbinding sense");
+    	logger.debug("Unbinding sense");
         Sense.unbind(getCordovaActivity());
 
         return true;

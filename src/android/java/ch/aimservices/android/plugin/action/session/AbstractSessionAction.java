@@ -1,7 +1,9 @@
 package ch.aimservices.android.plugin.action.session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.os.Build;
-import android.util.Log;
 import android.webkit.WebView;
 
 import org.apache.cordova.CordovaInterface;
@@ -28,6 +30,7 @@ import static ch.sysmosoft.sense.android.core.service.Sense.SenseSessionEstablis
  * Time: 17:20
  */
 public abstract class AbstractSessionAction extends BaseAction implements SenseSessionEstablishmentListener, SessionStatusListener {
+	private final Logger logger = LoggerFactory.getLogger(AbstractSessionAction.class);
 
     // Result codes
     public static final int LOGIN_OK = 0;
@@ -69,7 +72,7 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
 
     @Override
     public void onLoginSuccessful(final SenseServices senseServices) {
-        Log.d(getLogTag(), "Login successful");
+        logger.debug("Login successful");
 
         final Proxy proxy = senseServices.getProxyConfig().getProxy();
         final SocketAddress proxyAddress = proxy.address();
@@ -83,14 +86,14 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
 
             if (configure(host, port)) {
 			    senseServices.addSessionStatusListener(this);
-                Log.d(getLogTag(), "Proxy configured successfully");
+			    logger.debug("Proxy configured successfully");
                 success(LOGIN_OK, true);
             } else {
-                Log.d(getLogTag(), "No proxy configurator found");
+            	logger.debug("No proxy configurator found");
                 error(ERR_NO_PROXY_CONFIGURATOR);
             }
         } else {
-            Log.d(getLogTag(), "Unable to understand proxy configuration");
+        	logger.debug("Unable to understand proxy configuration");
             getSenseSessionService().closeSession();
             error(ERR_PROXY_CONFIGURATION);
         }
@@ -103,13 +106,13 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
     
     @Override
     public void onUpdateAvailable(final String update) {
-        Log.d(getLogTag(), "Update available. " + update);
+    	logger.debug("Update available. " + update);
         success(LOGIN_UPDATE_AVAILABLE, update, true);
     }
 
     @Override
     public void onLoginFailed(final Throwable cause) {
-        Log.d(getLogTag(), "Login failed.", cause);
+    	logger.debug("Login failed.", cause);
         final LoginErrorHandler.Error error = loginErrorHandler.handleError(cause);
         error(error.getCode(), error.getMessage());
     }
@@ -120,19 +123,19 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
 
     @Override
     public void willExpire() {
-    	Log.d(getLogTag(), "Session is about to expire.");
+    	logger.debug("Session is about to expire.");
     }
     
     @Override
     public void hasExpired() {
-        Log.d(getLogTag(), "Session has expired.");
+    	logger.debug("Session has expired.");
 		senseServicesContext.setSenseServices(null);
 		success(SESSION_EXPIRED);
     }
 
     @Override
     public void hasLocked() {
-        Log.d(getLogTag(), "Session has been locked.");
+    	logger.debug("Session has been locked.");
         success(SESSION_LOCKED);
     } 
 }

@@ -1,7 +1,9 @@
 package ch.aimservices.android.proxy.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.os.Build;
-import android.util.Log;
 import android.webkit.WebView;
 
 import java.lang.reflect.Constructor;
@@ -19,6 +21,7 @@ import ch.aimservices.android.proxy.ProxyConfigurator;
  * To change this template use File | Settings | File Templates.
  */
 public class IceCreamSandwichConfigurator extends BaseProxyConfigurator implements ProxyConfigurator {
+	private final Logger logger = LoggerFactory.getLogger(IceCreamSandwichConfigurator.class);
 
     @Override
     public int getMaxSupportedVersion() {
@@ -27,7 +30,7 @@ public class IceCreamSandwichConfigurator extends BaseProxyConfigurator implemen
 
     @Override
     public boolean configure(final WebView webview, final String host, final int port) {
-        Log.d(LOG_TAG, "Setting proxy with 4.0 API.");
+        logger.debug("Setting proxy with 4.0 API.");
 
         try {
             final Class jwcjb = Class.forName("android.webkit.JWebCoreJavaBridge");
@@ -56,10 +59,10 @@ public class IceCreamSandwichConfigurator extends BaseProxyConfigurator implemen
 
             updateProxyInstance.invoke(sJavaBridge, ppcont.newInstance(host, port, null));
 
-            Log.d(LOG_TAG, "Setting proxy with 4.0 API successful!");
+            logger.debug("Setting proxy with 4.0 API successful!");
             return true;
         } catch (Exception ex) {
-            Log.e(LOG_TAG, "failed to set HTTP proxy: " + ex);
+        	logger.error("failed to set HTTP proxy: ", ex);
             return false;
         }
     }

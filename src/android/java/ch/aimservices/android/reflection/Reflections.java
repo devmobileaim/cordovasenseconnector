@@ -1,7 +1,9 @@
 package ch.aimservices.android.reflection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.content.Context;
-import android.util.Log;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -14,8 +16,7 @@ import dalvik.system.DexFile;
  * Created by pblanco on 21.08.2014.
  */
 public class Reflections {
-
-    private static final String LOG_TAG = "Reflections";
+	private final Logger logger = LoggerFactory.getLogger(Reflections.class);
 
     private final Context context;
 
@@ -53,7 +54,7 @@ public class Reflections {
             }
         } catch (Exception e) {
             // TODO: more precise error handling
-            Log.e(LOG_TAG, "Error", e);
+            logger.error("Error", e);
         }
         return subTypes;
     }
