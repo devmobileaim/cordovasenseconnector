@@ -8,7 +8,7 @@ AiM Services (http://www.aim-services.ch) and Sysmosoft (http://www.sysmosoft.co
 The Sysmosoft SDK first version was available for native iOS and Android applications but not for multi-platform environment.
 Thus, thanks to AiM's experience, we decided to develop SenseConnector, a Cordova / Phonegap plugin exposing Sysmosoft SDK‘s features to HTML5 developers on mobile platforms.
 
-Sysmosoft SDK allows two protection levels for the application.
+Sysmosoft SENSE SDK allows two protection levels for the application.
 
 **Offline protection**:
 
@@ -26,7 +26,7 @@ Sysmosoft SDK allows two protection levels for the application.
 - User inactivity detection
 - Timeout session detection
 
-Our plugin (SenseConnector) installation is based on the CLI (command line interface) provided by Cordova project. You can easily add the plugin to an existing Cordova project and automatically benefit from the offline protection. If you want to go further, you can setup the Sense Server in just a few minutes.
+Our plugin (SenseConnector) installation is based on the CLI (command line interface) provided by Cordova project. You can easily add the plugin to an existing Cordova project and automatically benefit from the offline protection. If you want to go further, you can setup the SENSE Server in just a few minutes.
 
 SenseConnector Cordova plugin installation for iOS & Android
 
@@ -50,11 +50,37 @@ To create a blank project that will serve as a base for html sources, the proced
 - cordova platform add android
 - **Register on the Sysmosoft web site** : https://files.sysmosoft.com/sdk/sense-sdk.html
 - cordova plugins add https://github.com/devmobileaim/cordovasenseconnector.git
+- **Complete the sense-config.properties files** Add the value for `sec-server-url` and `sense-license` in the `sense-config.properties` for Android and iOS
 - cordova build ios
 - cordova build android
 You have a project that you can edit or compile with XCode command line.
 
- 
+## iOS - Use the debugger
+With the default SENSE SDK, the debugger is not usable. To enable the debug mode, you need to install the debug version of the SENSE SDK.
+
+* Copy the `Debug` folder at path `YourAppRootFolder/plugins/ch.aimservices.cordova.plugins.sense/src/ios` to path `YourAppRootFolder/platforms/ios/YourApp/Plugins/ch.aimservices.cordova.plugins.sense`
+* In Xcode, open the `Build Settings` of your application project and search for `FRAMEWORK_SEARCH_PATHS`
+* Open the arrow to see two configurations, one for `Debug` and one for `Release`
+* Edit the `Debug` part and add `/Debug` at the end of `"YourApp/Plugins/ch.aimservices.cordova.plugins.sense"`. ATTENTION, change the value of `YourApp`
+
+Now, when you compile in Debug mode with Xcode, you are able to use the debugger.
+
+## iOS - Support the SENSE logger
+SENSE privides a logger to save logs on encrypted files then send logs to the server.
+
+To enable this feature, you need to follow the next points.
+The first point is to modify the `.pch` file of your application
+
+* In Xcode, find the `YourApp-Prefix.pch.pch` file of your application. ATTENTION, change the value of `YourApp`
+* At the end of the file, add `#import <sense/SFKPCHImport.h>`
+
+The second point is to modify the CordovaLib.
+
+* In Xcode, open the `CordovaLib.xcodeproj` containted in the your application workspace
+* Open the `Build Phases -> Link Binary With Libraries`
+* Drag and drop the `sense.framework` at path `YourAppRootFolder/platforms/ios/YourApp/Plugins/ch.aimservices.cordova.plugins.sense`
+* Find the `CordovaLib_Prefix.pch` file
+* At the end of the file, add `#import <sense/SFKPCHImport.h>`
 
 #Validation
 To test the Cordova project please follow the following procedure:
@@ -64,9 +90,7 @@ To test the Cordova project please follow the following procedure:
 - cordova run ios
 - cordova run android
 
-The application will run in the emulator and double tapping Cmd + Shift + H you can check the overview of the application is well hidden by the Sense SDK. For Android it depends on the version of the os but clicking on the “Exposé” you should see a black thumbnail where the application should be.
-
- 
+The application will run in the emulator and double tapping Cmd + Shift + H you can check the overview of the application is well hidden by the SENSE SDK. For Android it depends on the version of the os but clicking on the “Exposé” you should see a black thumbnail where the application should be.
 
 #Packaging
 To build the .ipa you can either use XCode or use the following command line :
@@ -75,3 +99,43 @@ To build the .ipa you can either use XCode or use the following command line :
 
 The development profile has been previously configured on the machine and the .mobileprovision file downloaded from the Apple site.
 To build the APK you can use the standard building command of Cordova CLI.
+
+# iOS - Crash report
+SENSE SDK provides a crash reporter by default. You can retrieve the crash report on the server.
+
+The crash reports are not readeable directly, you need to convert them.
+For that, use the following steps:
+
+* Create a folder and put the crash report provided by the server and the `.dSYM` folder corresponding to the application which had the crash
+* In the SENSE Cordova plugin, we provide a tool naming `plcrashutil`
+* Execute the following command
+
+	./plcrashutil convert --format=ios yourCrash.crash > yourCrash-converted.crash
+
+* Locate the “symbolicatecrash” on your system
+
+	cd /Applications/Xcode.app
+	find . -name symbolicatecrash
+
+* Export the DEVELOPER_DIR environment variable, if it doesn’t exist
+
+	export DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer"
+
+* Symbolicate your crash report
+
+	pathToTool/symbolicatecrash -o yourCrash-report.crash yourCrash-converted.crash YourApp.app.dSYM/
+
+* Open `yourCrash-report.crash` to see the symbolicated crash report
+
+
+## Match the good dSYM for an application
+
+To find the binary image of the crash report
+
+	grep --after-context=2 "Binary Images:" yourCrash.crash
+
+To find the UUID of the application
+
+	xcrun dwarfdump --uuid YourApp.app/YourApp | tr '[:upper:]' '[:lower:]' | tr -d '-'
+
+You should find the same value to symbolicate the crash report with the dSYM

@@ -8,8 +8,6 @@
 
 #import <Cordova/CDV.h>
 
-#define SECURITY_SERVER_URL    @"${sec-server-url}"
-
 @interface SenseConnector : CDVPlugin
 
 #pragma mark session management
