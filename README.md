@@ -55,6 +55,12 @@ To create a blank project that will serve as a base for html sources, the proced
 - cordova build android
 You have a project that you can edit or compile with XCode command line.
 
+## iOS - Simulator
+To run your application on the simulator, you need to enable the `Keychaing Sharing` capability.
+
+* In Xcode, open the `Capabilities` of your application project and search for `Keychain Sharing`
+* Turn on the `Keychain Sharing` capability
+
 ## iOS - Use the debugger
 With the default SENSE SDK, the debugger is not usable. To enable the debug mode, you need to install the debug version of the SENSE SDK.
 
@@ -66,7 +72,7 @@ With the default SENSE SDK, the debugger is not usable. To enable the debug mode
 Now, when you compile in Debug mode with Xcode, you are able to use the debugger.
 
 ## iOS - Support the SENSE logger
-SENSE privides a logger to save logs on encrypted files then send logs to the server.
+SENSE provides a logger to save logs on encrypted files then send logs to the server.
 
 To enable this feature, you need to follow the next points.
 The first point is to modify the `.pch` file of your application
