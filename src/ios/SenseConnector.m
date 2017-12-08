@@ -11,6 +11,7 @@
 #import <sense/SFKSessionService.h>
 #import <sense/SFKNotificationName.h>
 #import <sense/SFKSecureStorage.h>
+#import <sense/SFKConfiguration.h>
 
 const int LOGIN_OK               = 0;
 const int LOGIN_PINCODE_REQUIRED = 1;
@@ -59,14 +60,13 @@ LoginBlock loginCallback = ^(NSError* error, SenseConnector* connector, CDVInvok
 @implementation SenseConnector
 
 - (void)pluginInitialize {
-    NSLog(@"SenseConnector plugin initialized");
+    NSLog(@"SenseConnector plugin initializing");
     self.sessionReady = NO;
 
-    [[SFKInitializer sharedInitializer] initializeSenseWithSecurityURL:SECURITY_SERVER_URL errorBlock:^(NSError* error) {
+    NSString *serverURL = [SFKConfiguration senseConfiguration][@"sec-server-url"];
+    [[SFKInitializer sharedInitializer] initializeSenseWithSecurityURL:serverURL errorBlock:^(NSError* error) {
         if (error) {
-            NSString* errorMsg = [[error userInfo] objectForKey:@"NSLocalizedDescription"];
-            NSString* message = [NSString stringWithFormat:@"Something went wrong here.\nError: %@", errorMsg];
-            NSLog(@"\t%@", message);
+            NSLog(@"ERROR - initialization of SENSE SDK with url %@, failed: %@", serverURL, error);
         }
     }];
 
