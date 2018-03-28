@@ -69,6 +69,32 @@ extern NSInteger const SFK_ERROR_CODE_AUTHENTICATION;
 extern NSInteger const SFK_ERROR_CODE_ACCESS_DENIED;
 
 /**
+ *  SFK_ERROR_CODE_PASSWORD_EXPIRED
+ *
+ *  This error code means that the user's password has expired
+ *  but it can be changed by the SENSE SDK.
+ */
+extern NSInteger const SFK_ERROR_CODE_PASSWORD_EXPIRED;
+
+/**
+ *  SFK_ERROR_CODE_PASSWORD_CHANGE_REQUIRED
+ *
+ *  This error code means that the user's password has expired
+ *  and need to be updated.
+ *
+ *  @see [SFKSessionService enrollUsername:oldPassword:newPassword:code:errorBlock:] or
+ *       [SFKSessionService createSessionWithUsername:oldPassword:newPassword:errorBlock:]
+ */
+extern NSInteger const SFK_ERROR_CODE_PASSWORD_CHANGE_REQUIRED;
+
+/**
+ *  SFK_ERROR_CODE_PASSWORD_POLICY_VIOLATED
+ *
+ *  This error code means that the new user's password has been rejected by the server policies.
+ */
+extern NSInteger const SFK_ERROR_CODE_PASSWORD_POLICY_VIOLATED;
+
+/**
  *  SFK_ERROR_CODE_APPLICATION_DISABLED
  *
  *  This error code means that the user is not allowed to use this application.
@@ -123,6 +149,14 @@ extern NSInteger const SFK_ERROR_CODE_ACCOUNT_ALREADY_LOCKED;
  *  It is the sense server which locked the session.
  */
 extern NSInteger const SFK_ERROR_CODE_SESSION;
+
+/*
+ *  SFK_ERROR_CODE_PASSWORD_CHANGE_NOT_ALLOWED
+ *
+ *  This error code means that the password change is not allowed by the SENSE
+ *  server under the security settings.
+ */
+extern NSInteger const SFK_ERROR_CODE_PASSWORD_CHANGE_NOT_ALLOWED;
 
 /**
  *  SFK_ERROR_CODE_CHANGE_PASSWORD_NOT_ALLOWED

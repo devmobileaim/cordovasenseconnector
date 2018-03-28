@@ -29,6 +29,21 @@
 + (void)enrollUsername:(NSString *)username password:(NSString *)password code:(NSString *)code errorBlock:(void(^)(NSError *))errorBlock;
 
 /**
+ *  Enroll a user and update its password
+ *
+ *  Use this method when the enrollUsername:password:code:errorBlock: return the error code _SFK_ERROR_CODE_PASSWORD_CHANGE_REQUIRED_.
+ *
+ *  @param username     Username of the user to enroll
+ *  @param oldPassword  Old password of the user to enroll
+ *  @param newPassword  New password of the user to enroll
+ *  @param code         This is the enrollment code given by the admin
+ *  @param errorBlock   The block will be called (on the main thread) at the end of the enrollment phase.
+ *                      If there is no error returned, then  the enrollment passed and the user is enrolled.
+ *                      You can check it by using the method userLogged or alreadyEnrolledUsers
+ */
++ (void)enrollUsername:(NSString *)username oldPassword:(NSString *)oldPassword newPassword:(NSString *)newPassword code:(NSString *)code errorBlock:(void(^)(NSError *))errorBlock;
+
+/**
  *  Enroll a user
  *
  *  @param username   Username of the user to enroll
@@ -55,6 +70,21 @@
  *                    If there is no error returned, then the login passed. You can check it by using the method userLogged.
  */
 + (void)createSessionWithUsername:(NSString *)username password:(NSString *)password errorBlock:(void(^)(NSError *))errorBlock;
+
+/**
+ *  Create a session for the user on the server and update its password.
+ *
+ *  This is the method called for a log in.
+ *
+ *  Use this method when the createSessionWithUsername:password:errorBlock: return the error code _SFK_ERROR_CODE_PASSWORD_CHANGE_REQUIRED_.
+ *
+ *  @param username     Username of the user to authenticate
+ *  @param oldPassword  Old password of the user to authenticate
+ *  @param newPassword  New password of the user to authenticate
+ *  @param errorBlock   The block will be called (on the main thread) at the end of the login phase.
+ *                      If there is no error returned, then the login passed. You can check it by using the method userLogged.
+ */
++ (void)createSessionWithUsername:(NSString *)username oldPassword:(NSString *)oldPassword newPassword:(NSString *)newPassword errorBlock:(void(^)(NSError *))errorBlock;
 
 /**
  *  Open an existing session for the user on the server
@@ -157,8 +187,15 @@
 + (NSArray *)alreadyLoggedInUsers;
 
 /**
- *  Disenroll all the users registered on the device.
+ *  Disenroll all the users enrolled on the device.
  */
 + (void)disenrollUsers;
+
+/**
+ *  Disenroll the user enrolled on the device.
+ *
+ *  @username Username contained in [alreadyEnrolledUsers]
+ */
++ (void)disenrollUser:(NSString *)username;
 
 @end
