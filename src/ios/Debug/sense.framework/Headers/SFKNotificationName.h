@@ -84,3 +84,13 @@ extern NSString * const SFK_UPDATE_AVAILABLE_NOTIFICATION;
  *  Sent by the framework when the [SFKUpdateService checkForUpdateWithError:] method is called and the application is up-to-date.
  */
 extern NSString * const SFK_APPLICATION_UP_TO_DATE_NOTIFICATION;
+
+/**
+ *  SFK_PASSWORD_EXPIRATION_DATE_NOTIFICATION
+ *
+ *  Sent by the framework when the user password is about to expire.
+ *  The notification brings the date of the expiration, it's accessible through the notification.object[@"date"];
+ *
+ *  This notification is sent during the log in of a user (might also happen during an enrollment of the user).
+ */
+extern NSString * const SFK_PASSWORD_EXPIRATION_DATE_NOTIFICATION;
