@@ -147,7 +147,7 @@ public class SenseConnector extends CordovaPlugin implements SenseServicesContex
 		settings.setSavePassword(false);
 		settings.setSaveFormData(false);
 		settings.setDatabaseEnabled(false);
-		settings.setGeolocationEnabled(false);
+		settings.setGeolocationEnabled(true);
 		settings.setAppCacheMaxSize(1);
 		settings.setPluginState(WebSettings.PluginState.OFF);
 		settings.setBuiltInZoomControls(true);
