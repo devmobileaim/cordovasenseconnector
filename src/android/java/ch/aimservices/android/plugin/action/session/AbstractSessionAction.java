@@ -11,6 +11,7 @@ import org.apache.cordova.CordovaInterface;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
+import java.util.Date;
 
 import ch.aimservices.android.plugin.action.BaseAction;
 import ch.aimservices.android.plugin.SenseServicesContext;
@@ -117,6 +118,11 @@ public abstract class AbstractSessionAction extends BaseAction implements SenseS
         error(error.getCode(), error.getMessage());
     }
 
+    @Override
+    public void onPasswordAboutToExpire(Date date) {
+        logger.debug("User's password will expire on {}.", date);
+    }
+    
     /* ======================================== */
     /* = SessionStatusListener Implementation = */
     /* ======================================== */
